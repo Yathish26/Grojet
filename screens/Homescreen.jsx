@@ -1,49 +1,44 @@
 import React, { useState } from 'react';
 import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, TextInput, Platform, StyleSheet } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { CircleUserRoundIcon, Home, Layers2, Locate, Navigation2, PaintRoller, PlugZap, ReceiptText, Search, ShoppingCart, Tv, Umbrella, UserRound, Volleyball, X } from 'lucide-react-native';
+import { Box, CircleUserRoundIcon, Flame, Gift, Home, Layers2, Locate, Navigation2, Package, PaintRoller, PlugZap, ReceiptText, Search, ShoppingCart, Tv, Umbrella, UserRound, Vegan, Volleyball, Wheat, X } from 'lucide-react-native';
 import Svg, { Path } from "react-native-svg";
+import { LinearGradient } from 'expo-linear-gradient';
 
 // Dummy data for categories, bestsellers, and grocery items
 const categories = [
-  { id: 'all', name: 'All', icon: <ReceiptText size={20} color="#4A5568" />, isNew: false },
-  { id: 'monsoon', name: 'Monsoon', icon: <Umbrella size={20} color="#4A5568" />, isNew: true },
-  { id: 'electronics', name: 'Electronics', icon: <PlugZap size={20} color="#4A5568" />, isNew: false },
   {
-    id: 'beauty',
-    name: 'Beauty',
-    icon: <Svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={20}
-      height={20}
-      viewBox="0 0 24 24"
-      fill="none"
-      className="injected-svg"
-      data-src="https://cdn.hugeicons.com/icons/blush-brush-02-stroke-standard.svg"
-      xmlnsXlink="http://www.w3.org/1999/xlink"
-      role="img"
-      color="#4a4a4a"
-    >
-      <Path
-        d="M6.08594 3.99414L6.41749 4.89014C6.72135 5.7113 7.36878 6.35873 8.18994 6.66259L9.08594 6.99414L8.18994 7.32569C7.36878 7.62955 6.72135 8.27698 6.41749 9.09814L6.08594 9.99414L5.75439 9.09814C5.45053 8.27698 4.8031 7.62955 3.98194 7.32569L3.08594 6.99414L3.98194 6.66259C4.8031 6.35873 5.45053 5.7113 5.75439 4.89014L6.08594 3.99414Z"
-        stroke="#4a4a4a"
-        strokeWidth={1.5}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <Path
-        d="M15.0386 14.9951C14.4376 19.861 11.4306 21.7441 10.0581 22.0028C7.42795 21.6554 5.70783 20.3663 4.63036 18.8624M15.0386 14.9951L12.0176 12.9777M15.0386 14.9951L17.5967 9.99416M12.0176 12.9777C7.95744 15.7109 4.65834 14.6371 3.14417 13.8776C3.07915 13.845 3.00175 13.8889 3.00059 13.9617C2.98129 15.1727 3.4326 17.1906 4.63036 18.8624M12.0176 12.9777L15.0236 8.38354M15.0236 8.38354L18.8579 2.52349C19.1891 2.02342 19.844 1.85533 20.3743 2.13425C20.9454 2.43462 21.1656 3.14192 20.8663 3.71445L17.5967 9.99416M15.0236 8.38354L17.5967 9.99416M4.63036 18.8624C6.72157 19.4846 9.39667 18.4653 10.1715 17.9526"
-        stroke="#4a4a4a"
-        strokeWidth={1.5}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </Svg>
+    id: 'all',
+    name: 'All',
+    Icon: <ReceiptText size={20} color="#4A5568" />,
+    isNew: false,
   },
-  { id: 'decor', name: 'Decor', icon: <PaintRoller size={20} color="#4A5568" />, isNew: false },
-  { id: 'home_appliances', name: 'Appliances', icon: <Tv size={20} color="#4A5568" />, isNew: false },
-  { id: 'sports', name: 'Sports', icon: <Volleyball size={20} color="#4A5568" />, isNew: false },
+  {
+    id: 'grains',
+    name: 'Grains',
+    Icon: <Wheat size={20} color="#4A5568" />,
+    isNew: false,
+  },
+  {
+    id: 'pulses',
+    name: 'Pulses',
+    Icon: <Vegan size={20} color="#4A5568" />,
+    isNew: false,
+  },
+  {
+    id: 'spices',
+    name: 'Spices',
+    Icon: <Flame size={20} color="#4A5568" />,
+    isNew: false,
+  },
+  {
+    id: 'others',
+    name: 'Others',
+    Icon: <Gift size={20} color="#4A5568" />,
+    isNew: false,
+  },
 ];
+
 
 const bestsellersCategories = [
   {
@@ -62,10 +57,10 @@ const bestsellersCategories = [
     name: 'Chips & Namkeen',
     more: '+280 more',
     images: [
-      'https://placehold.co/50x50/FEE2E2/EF4444?text=🍟', // Red (fries)
-      'https://placehold.co/50x50/BFDBFE/2563EB?text=🥨', // Blue (pretzel)
-      'https://placehold.co/50x50/E9D5FF/8B5CF6?text=🌰', // Purple (nut)
-      'https://placehold.co/50x50/D1FAE5/065F46?text=🍪', // Green (cookie)
+      'https://i.pinimg.com/736x/70/49/61/704961d2f6aff08cddc62f937000f0cc.jpg', // Red (fries)
+      'https://i.pinimg.com/736x/c0/d6/51/c0d6512332ce5deea379b9e4a5211187.jpg', // Blue (pretzel)
+      'https://i.pinimg.com/736x/c1/8a/63/c18a634891a35b0b80cb2889e8ff6d4a.jpg', // Purple (nut)
+      'https://i.pinimg.com/736x/9e/72/13/9e72139236215e8ddc04ade8f4784e09.jpg', // Green (cookie)
     ],
   },
   {
@@ -73,10 +68,10 @@ const bestsellersCategories = [
     name: 'Drinks & Juices',
     more: '+125 more',
     images: [
-      'https://placehold.co/50x50/FEE2E2/EF4444?text=🥤',
-      'https://placehold.co/50x50/BFDBFE/2563EB?text=🥛',
-      'https://placehold.co/50x50/D1FAE5/065F46?text=🍾',
-      'https://placehold.co/50x50/FCD34D/92400E?text=🍹',
+      'https://i.pinimg.com/736x/6f/16/26/6f162666c6650083f90885eb32fb6448.jpg',
+      'https://i.pinimg.com/736x/83/a0/76/83a0765413aa33f05e1867ffedf2a429.jpg',
+      'https://i.pinimg.com/736x/2f/2b/a3/2f2ba30aa098d1cfabed4ff8309e1117.jpg',
+      'https://i.pinimg.com/736x/c6/0e/37/c60e373b7c5123c46f181c679fc388fc.jpg',
     ],
   },
   {
@@ -84,10 +79,10 @@ const bestsellersCategories = [
     name: 'Bakery & Biscuits',
     more: '+113 more',
     images: [
-      'https://placehold.co/50x50/FEE2E2/EF4444?text=🍫',
-      'https://placehold.co/50x50/BFDBFE/2563EB?text=🍩',
-      'https://placehold.co/50x50/D1FAE5/065F46?text=🥐',
-      'https://placehold.co/50x50/FCD34D/92400E?text=🍞',
+      'https://i.pinimg.com/736x/8f/9f/2d/8f9f2d3f1fbef3283836c0c0d2936f44.jpg',
+      'https://i.pinimg.com/736x/e3/98/3f/e3983fc41b690eefdb90996f6fc906c8.jpg',
+      'https://i.pinimg.com/736x/18/e8/4f/18e84f373a1d7e3b121acf59b3777d79.jpg',
+      'https://i.pinimg.com/736x/1b/dc/c6/1bdcc675fed703b9a6fecfb572d74114.jpg',
     ],
   },
   {
@@ -95,8 +90,8 @@ const bestsellersCategories = [
     name: 'Dairy, Bread & Eggs',
     more: '+12 more',
     images: [
-      'https://placehold.co/50x50/FCD34D/92400E?text=🧀',
-      'https://placehold.co/50x50/A7F3D0/10B981?text=🥚',
+      'https://i.pinimg.com/736x/e5/5c/0f/e55c0f188c99366d3f63c73c7b1363d8.jpg',
+      'https://i.pinimg.com/736x/46/b8/7d/46b87dc1b5990413635bd9822e447240.jpg',
       'https://placehold.co/50x50/FCA5A5/DC2626?text=🧈',
       'https://placehold.co/50x50/D1FAE5/065F46?text=🥖',
     ],
@@ -115,12 +110,12 @@ const bestsellersCategories = [
 ];
 
 const groceryKitchenItems = [
-  { id: 'veg', name: 'Vegetables & Fruits', image: 'https://placehold.co/100x100/A7F3D0/10B981?text=🥦+🍎' },
-  { id: 'atta', name: 'Atta, Rice & Dal', image: 'https://placehold.co/100x100/BFDBFE/2563EB?text=🍚+🥣' },
-  { id: 'oil_ghee_spices', name: 'Oil, Ghee & Spices', image: 'https://placehold.co/100x100/FCD34D/92400E?text=🍶+🌶️' },
-  { id: 'dairy_bakery', name: 'Dairy & Bakery', image: 'https://placehold.co/100x100/FEE2E2/EF4444?text=🥛+🍞' },
-  { id: 'snacks', name: 'Snacks & Beverages', image: 'https://placehold.co/100x100/D1FAE5/065F46?text=🍟+🥤' },
-  { id: 'clean', name: 'Cleaning Essentials', image: 'https://placehold.co/100x100/E9D5FF/8B5CF6?text=🧹+🧼' },
+  { id: 'veg', name: 'Vegetables & Fruits', image: 'https://i.pinimg.com/736x/ae/d9/11/aed9114ac106c26a1a67263e0635386c.jpg' },
+  { id: 'atta', name: 'Atta, Rice & Dal', image: 'https://i.pinimg.com/736x/79/c4/5a/79c45aacd5dfbd3ff53cc4fd5275dbcb.jpg' },
+  { id: 'oil_ghee_spices', name: 'Oil, Ghee & Spices', image: 'https://i.pinimg.com/736x/12/4f/ba/124fba10f7f343da6bd2a364992523fb.jpg' },
+  { id: 'dairy_bakery', name: 'Dairy & Bakery', image: 'https://i.pinimg.com/736x/77/fc/a9/77fca901813d38ef4b1bbe9234b1eaab.jpg' },
+  { id: 'snacks', name: 'Snacks & Beverages', image: 'https://i.pinimg.com/736x/90/d0/ea/90d0ea939da33dc9f0dba30656930615.jpg' },
+  { id: 'clean', name: 'Cleaning Essentials', image: 'https://i.pinimg.com/736x/bc/52/fa/bc52fabb16921d546cc380cc0561a530.jpg' },
 ];
 
 
@@ -130,43 +125,73 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
-      <StatusBar style="dark" /> {/* Status bar for the top */}
 
       {/* Top Bar (Blinkit Header) */}
-      <View className="bg-white px-4 pt-4 pb-3 mt-8 shadow-sm border-b border-gray-100">
-        <View className="flex-row justify-between items-center mb-3">
-          <Text className="text-xl font-bold text-gray-800">Grojet</Text>
-          <View className="bg-gray-100 p-2 rounded-full">
+      <LinearGradient
+        colors={['#ffffff', '#e1f7df']} // adjust gradient colors
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        className="px-4 pb-3 border-b border-gray-100"
+      >
+        <View className="flex-row justify-between items-center mt-3">
+          <Image
+            source={require('../assets/grojetpng.png')}
+            className="w-32 h-16"
+            resizeMode="contain"
+          />
+          <View className="bg-white/30 p-2 rounded-full">
             <CircleUserRoundIcon size={24} color="black" />
           </View>
         </View>
 
-        <TouchableOpacity className="flex-row items-center bg-white">
-          <View className="flex flex-row items-center">
-            <Navigation2 size={20} color="#4A5568" />
-            <Text className="text-sm text-gray-600">Mangalore ▼</Text>
+        <TouchableOpacity className="flex-row items-center mt-2">
+          <View className="flex-row items-center gap-1">
+            <Svg
+              xmlns="http://www.w3.org/2000/svg"
+              width={18}
+              height={18}
+              viewBox="0 0 24 24"
+              fill="none"
+              role="img"
+              color="#4a4a4a"
+            >
+              <Path
+                d="M15.5 11C15.5 12.933 13.933 14.5 12 14.5C10.067 14.5 8.5 12.933 8.5 11C8.5 9.067 10.067 7.5 12 7.5C13.933 7.5 15.5 9.067 15.5 11Z"
+                stroke="#4a4a4a"
+                strokeWidth={1.5}
+              />
+              <Path
+                d="M21 11C21 18 12 22 12 22C12 22 3 18 3 11C3 6.02944 7.02944 2 12 2C16.9706 2 21 6.02944 21 11Z"
+                stroke="#4a4a4a"
+                strokeWidth={1.5}
+                strokeLinejoin="round"
+              />
+            </Svg>
+            <Text className="text-md text-gray-800 font-semibold">Mangalore</Text>
           </View>
         </TouchableOpacity>
-      </View>
 
-      {/* Search Bar */}
-      <View className="p-4 bg-white border-b border-gray-200 shadow-sm">
-        <View className="flex-row items-center bg-gray-100 rounded-full px-4 py-2">
-          <Search size={20} color="#666" />
-          <TextInput
-            className="flex-1 text-gray-800 text-base px-3"
-            value={searchtext}
-            onChangeText={setSearchText}
-            placeholder="Search 'bottle'"
-            placeholderTextColor="#999"
-          />
-          {searchtext.length > 0 && (
-            <TouchableOpacity onPress={() => setSearchText('')}>
-              <X size={20} color="#666" />
-            </TouchableOpacity>
-          )}
+
+
+        {/* Search Bar */}
+        <View className="py-4">
+          <View className="flex-row items-center bg-white rounded-xl px-4 py-1">
+            <Search size={20} color="#666" />
+            <TextInput
+              className="flex-1 text-gray-800 text-base px-3"
+              value={searchtext}
+              onChangeText={setSearchText}
+              placeholder="Search 'coconut'"
+              placeholderTextColor="#999"
+            />
+            {searchtext.length > 0 && (
+              <TouchableOpacity onPress={() => setSearchText('')}>
+                <X size={20} color="#666" />
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
-      </View>
+      </LinearGradient>
 
 
       <ScrollView className="flex-1 pb-20"> {/* Add padding for bottom nav */}
@@ -174,7 +199,7 @@ export default function HomeScreen({ navigation }) {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          className="py-3 px-3 bg-white border-b border-gray-200"
+          className="py-3 px-4  border-b border-gray-200"
         >
           {categories.map((cat) => (
             <TouchableOpacity
@@ -192,7 +217,7 @@ export default function HomeScreen({ navigation }) {
 
               {/* Icon */}
               <View className="mb-1">
-                {cat.icon}
+                {cat.Icon}
               </View>
 
               {/* Label */}
@@ -272,25 +297,6 @@ export default function HomeScreen({ navigation }) {
         <View className="h-20"></View>
       </ScrollView>
 
-      {/* Bottom Navigation */}
-      <View className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-md flex-row justify-around py-3">
-        <TouchableOpacity className="items-center">
-          <Home size={24} color="#4A5568" />
-          <Text className="text-xs text-blue-600">Home</Text>
-        </TouchableOpacity>
-        <TouchableOpacity className="items-center">
-          <ShoppingCart size={24} color="#4A5568" />
-          <Text className="text-xs text-gray-500">Order Again</Text>
-        </TouchableOpacity>
-        <TouchableOpacity className="items-center">
-          <Layers2 size={24} color="#4A5568" />
-          <Text className="text-xs text-gray-500">Categories</Text>
-        </TouchableOpacity>
-        <TouchableOpacity className="items-center">
-          <UserRound size={24} color="#4A5568" />
-          <Text className="text-xs text-gray-500">Profile</Text>
-        </TouchableOpacity>
-      </View>
     </SafeAreaView>
   );
 }
