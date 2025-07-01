@@ -21,6 +21,7 @@ import {
   ChevronLeft,
 } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
+import BackHeader from 'components/BackHeader';
 
 export default function Profile() {
   const [theme, setTheme] = useState('LIGHT');
@@ -33,15 +34,10 @@ export default function Profile() {
 
   return (
     <View className="flex-1 bg-gray-50">
-      <View className="flex-row items-center p-4 bg-white border-b border-gray-200">
-        <TouchableOpacity onPress={() => navigate.goBack()}>
-          <ChevronLeft size={20} color="#4A5568" /> {/* Using ArrowLeft icon */}
-        </TouchableOpacity>
-        <Text className="text-xl font-semibold text-gray-800 ml-4">Profile</Text> {/* Added ml-4 for spacing */}
-      </View>
+      <BackHeader title="Profile" />
       {/* Account Section */}
       <View className="bg-white p-5 border-gray-100">
-        <Text className="text-lg font-extrabold text-gray-800 mb-3">Your account</Text>
+        <Text className="text-3xl font-semibold text-gray-800 mb-3">Yathish</Text>
         <View className="flex-row gap-2 items-center mb-5">
           <Phone size={20} color="#4b5563" />
           <Text className="text-gray-700 text-base font-medium">8073215402</Text>
@@ -82,7 +78,6 @@ export default function Profile() {
           {[
             { Icon: ShoppingBag, text: 'Your orders', screen: 'Orders' },
             { Icon: Heart, text: 'Your wishlist', screen: 'Wishlist' },
-            { Icon: Book, text: 'Bookmarked recipes', screen: 'Bookmarks' },
             { Icon: MapPin, text: 'Address book', screen: 'AddressBook' },
             { Icon: Receipt, text: 'GST details', screen: 'GSTDetails' },
             { Icon: Gift, text: 'E-Gift Cards', screen: 'GiftCards' },
@@ -124,13 +119,14 @@ export default function Profile() {
           <Text className="text-xs uppercase text-gray-500 font-bold mb-4 tracking-wide">Other Information</Text>
           {[
             { Icon: Wallet, text: 'Share the App' },
-            { Icon: Info, text: 'About us' },
+            { Icon: Info, text: 'About us', screen: 'Aboutus' },
             { Icon: Lock, text: 'Account Privacy' },
             { Icon: Bell, text: 'Notifications' },
             { Icon: LogOut, text: 'Log Out' },
           ].map((item, index) => (
             <TouchableOpacity
               key={index}
+              onPress={()=> item.screen && navigate.navigate(item.screen)}
               className={`flex-row items-center justify-between py-3 ${index < 1 ? 'border-b border-gray-100' : ''}`}
             >
               <View className="flex-row gap-2 items-center">

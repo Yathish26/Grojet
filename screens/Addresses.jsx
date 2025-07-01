@@ -1,19 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
+import BackHeader from 'components/BackHeader';
 import { ChevronRight, Plus, Building, Home, Hotel, MoreHorizontal, Share2, X, MoveLeftIcon, ChevronLeft } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native'; // Re-importing React Native components
 
 export default function Addresses() {
-    const navigation = useNavigation();
   return (
     <ScrollView className="flex-1 bg-gray-100 pb-20"> {/* Added pb-20 for bottom padding */}
       {/* Header with back button */}
-      <View className="flex-row items-center p-4 pt-6 gap-2 bg-white border-b border-gray-200">
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <ChevronLeft size={20} color="#4A5568" />
-        </TouchableOpacity>
-        <Text className="text-xl font-semibold text-gray-800">My addresses</Text>
-      </View>
+      <BackHeader title="My Addresses" />
 
       <View className="p-4">
         {/* Add new address */}

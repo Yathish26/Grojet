@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Box, CircleUserRoundIcon, Flame, Gift, Home, Layers2, Locate, Navigation2, Package, PaintRoller, PlugZap, ReceiptText, Search, ShoppingCart, Tv, Umbrella, UserRound, Vegan, Volleyball, Wheat, X } from 'lucide-react-native';
 import Svg, { Path } from "react-native-svg";
 import { LinearGradient } from 'expo-linear-gradient';
+import Svgdata from 'components/Svgdata';
 
 // Dummy data for categories, bestsellers, and grocery items
 const categories = [
@@ -22,7 +23,7 @@ const categories = [
   {
     id: 'pulses',
     name: 'Pulses',
-    Icon: <Vegan size={20} color="#4A5568" />,
+    Icon: <Svgdata icon="leaf" className="w-5 h-5" color="#4A5568" size={20} />,
     isNew: false,
   },
   {
@@ -92,8 +93,8 @@ const bestsellersCategories = [
     images: [
       'https://i.pinimg.com/736x/e5/5c/0f/e55c0f188c99366d3f63c73c7b1363d8.jpg',
       'https://i.pinimg.com/736x/46/b8/7d/46b87dc1b5990413635bd9822e447240.jpg',
-      'https://placehold.co/50x50/FCA5A5/DC2626?text=🧈',
-      'https://placehold.co/50x50/D1FAE5/065F46?text=🥖',
+      'https://i.pinimg.com/736x/19/fb/1d/19fb1d9d5c381eced66413726d641b51.jpg',
+      'https://i.pinimg.com/736x/cc/ae/ab/ccaeabf7766f4f303dba162bc08c907e.jpg',
     ],
   },
   {
@@ -101,10 +102,10 @@ const bestsellersCategories = [
     name: 'Oil, Ghee & Masala',
     more: '+141 more',
     images: [
-      'https://placehold.co/50x50/FEE2E2/EF4444?text=🧴',
-      'https://placehold.co/50x50/BFDBFE/2563EB?text=🌶️',
-      'https://placehold.co/50x50/D1FAE5/065F46?text=🧂',
-      'https://placehold.co/50x50/FCD34D/92400E?text=🍲',
+      'https://i.pinimg.com/736x/ac/38/52/ac3852fa65c08c33423f171d4e685598.jpg',
+      'https://i.pinimg.com/736x/81/b0/e6/81b0e60ba40853f9f2b7a9c8fdea6840.jpg',
+      'https://i.pinimg.com/736x/a3/0e/04/a30e0470e38b82947692cfbb37f7ad65.jpg',
+      'https://i.pinimg.com/736x/3f/95/41/3f9541ffd94c2e472f65f7a497731b4e.jpg',
     ],
   },
 ];
@@ -258,15 +259,17 @@ export default function HomeScreen({ navigation }) {
                   ))}
                 </View>
 
-                {/* Sub label */}
-                <Text className="text-xs uppercase text-gray-400 text-center mb-1 tracking-wider">
-                  {bestseller.more}
-                </Text>
+                <View className='flex-1 justify-center items-center'>
+                  {/* Sub label */}
+                  <Text className="text-xs uppercase text-gray-400  mb-1 tracking-wider">
+                    {bestseller.more}
+                  </Text>
 
-                {/* Main label */}
-                <Text className="text-sm font-semibold text-gray-800 text-center">
-                  {bestseller.name}
-                </Text>
+                  {/* Main label */}
+                  <Text className="text-sm font-semibold text-gray-800 ">
+                    {bestseller.name}
+                  </Text>
+                </View>
               </TouchableOpacity>
             ))}
           </View>
