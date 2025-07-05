@@ -4,7 +4,7 @@ import { View, Text, ScrollView } from 'react-native';
 
 export default function AboutUs() {
   return (
-    <ScrollView className="flex-1 bg-gray-100 pb-20">
+    <ScrollView className="flex-1 bg-white pb-20">
       <BackHeader title="About Us" />
 
       <View className="p-4 flex-1">

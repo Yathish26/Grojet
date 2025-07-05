@@ -46,7 +46,7 @@ export default function BottomNav({ currentRoute }) {
       {/* Top Indicator */}
       {tabWidth > 0 && (
         <Animated.View
-          className="absolute top-0 h-1 bg-green-500 rounded-full"
+          className="absolute top-0 h-1 bg-green-500 rounded-b-3xl"
           style={{
             width: tabWidth,
             transform: [{ translateX: indicatorAnim }]

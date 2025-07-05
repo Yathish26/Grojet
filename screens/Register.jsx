@@ -57,7 +57,8 @@ const Register = ({ navigation }) => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior='padding'
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
       className="flex-1 bg-white"
     >
       {/* Top Green Header */}

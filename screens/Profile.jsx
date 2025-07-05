@@ -71,31 +71,20 @@ export default function Profile() {
             <Phone size={16} color="#4b5563" />
             <Text className="text-gray-700 text-base font-medium">8073215402</Text>
           </View>
-
-          {/* Birthday Card */}
-          <View className="flex-row items-center justify-between bg-emerald-50 rounded-xl p-4 overflow-hidden relative border border-emerald-100">
-            <View className="flex-shrink pr-4">
-              <Text className="font-semibold text-gray-800 mb-1">Add your birthday</Text>
-              <TouchableOpacity className="flex-row items-center">
-                <Text className="text-emerald-600 font-bold text-sm">Enter details</Text>
-                <ChevronRight size={16} color="#059669" />
-              </TouchableOpacity>
-            </View>
-            <Image
-              source={{ uri: 'https://placehold.co/80x80/d1fae5/059669?text=🎂' }}
-              className="absolute -right-4 -bottom-4 opacity-70 w-20 h-20 rounded-full"
-            />
-          </View>
         </View>
 
         <ScrollView className="p-4">
           {/* Quick Links */}
           <View className="flex-row flex justify-between mb-6 gap-2">
-            <TouchableOpacity className="flex-1 items-center justify-center bg-white p-4 rounded-xl shadow-md border border-gray-100">
+            {/* <TouchableOpacity
+              onPress={() => navigate.navigate('EditProfile')}
+              className="flex-1 items-center justify-center bg-white p-4 rounded-xl shadow-md border border-gray-100">
               <UserRoundPen size={26} color="#4b5563" />
               <Text className="text-sm text-gray-700 text-center font-medium mt-2">Edit Profile</Text>
-            </TouchableOpacity>
-            <TouchableOpacity className="flex-1 items-center justify-center bg-white p-4 rounded-xl shadow-md border border-gray-100">
+            </TouchableOpacity> */}
+            <TouchableOpacity
+              onPress={() => navigate.navigate('Support')}
+              className="flex-1 items-center justify-center bg-white p-4 rounded-xl shadow-md border border-gray-100">
               <MessageSquareDashed size={26} color="#4b5563" />
               <Text className="text-sm text-gray-700 text-center font-medium mt-2">Support</Text>
             </TouchableOpacity>
@@ -133,7 +122,7 @@ export default function Profile() {
             <Text className="text-xs uppercase text-gray-500 font-bold mb-4 tracking-wide">Payments and Coupons</Text>
             {[
               { Icon: Wallet, text: 'Wallet' },
-              { Icon: CreditCard, text: 'Grojet Money' },
+              { Icon: CreditCard, text: 'Money' },
             ].map((item, index) => (
               <TouchableOpacity
                 key={index}
@@ -152,10 +141,9 @@ export default function Profile() {
           <View className="mb-28 bg-white p-5 rounded-xl shadow-md border border-gray-100">
             <Text className="text-xs uppercase text-gray-500 font-bold mb-4 tracking-wide">Other Information</Text>
             {[
-              { Icon: Wallet, text: 'Share the App' },
               { Icon: Info, text: 'About us', screen: 'Aboutus' },
-              { Icon: Lock, text: 'Account Privacy' },
-              { Icon: Bell, text: 'Notifications' },
+              { Icon: Lock, text: 'Account Privacy', screen: 'AccountPrivacy' },
+              { Icon: Bell, text: 'Notifications', screen: 'Notifications' },
               { Icon: UserRoundPlus, text: 'Register', screen: 'Register' },
               {
                 Icon: LogOut,
@@ -166,7 +154,7 @@ export default function Profile() {
               <TouchableOpacity
                 key={index}
                 onPress={item.action ? item.action : (() => item.screen && navigate.navigate(item.screen))}
-                className={`flex-row items-center justify-between py-3 ${index < 5 ? 'border-b border-gray-100' : ''}`}
+                className={`flex-row items-center justify-between py-3 ${index < 4 ? 'border-b border-gray-100' : ''}`}
               >
                 <View className="flex-row gap-2 items-center">
                   <item.Icon size={20} color="#4b5563" />

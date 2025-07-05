@@ -17,6 +17,9 @@ import Payments from 'screens/Payments';
 import Login from 'screens/Login';
 import Register from 'screens/Register';
 import ForgotPassword from 'ForgotPassword';
+import Support from 'screens/Support';
+import AccountPrivacy from 'screens/AccountPrivacy';
+import Notifications from 'screens/Notifications';
 
 const Stack = createNativeStackNavigator();
 
@@ -58,6 +61,9 @@ export default function App() {
             <Stack.Screen name="Orders" component={Orders} />
             <Stack.Screen name="Wishlist" component={Wishlist} />
             <Stack.Screen name="Aboutus" component={AboutUs} />
+            <Stack.Screen name="Support" component={Support} />
+            <Stack.Screen name="AccountPrivacy" component={AccountPrivacy} />
+            <Stack.Screen name="Notifications" component={Notifications} />
           </Stack.Navigator>
 
           <StatusBar style="auto" />

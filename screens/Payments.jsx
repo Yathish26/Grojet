@@ -93,13 +93,13 @@ const Payments = () => {
                 <TouchableOpacity
                   key={method.id}
                   onPress={() => setSelectedMethod(method.id)}
-                  className={`flex-1 items-center py-2 rounded-lg ${isSelected ? 'bg-blue-50' : ''}`}
+                  className={`flex-1 items-center py-2 rounded-lg ${isSelected ? 'bg-green-50' : ''}`}
                 >
-                  <View className={`p-2 rounded-full ${isSelected ? 'bg-blue-100' : 'bg-gray-100'}`}>
-                    {method.id !== 'upi' && <Icon size={20} color={isSelected ? '#3B82F6' : '#4B5563'} />}
+                  <View className={`p-2 rounded-full ${isSelected ? 'bg-green-100' : 'bg-gray-100'}`}>
+                    {method.id !== 'upi' && <Icon size={20} color={isSelected ? 'green' : '#4B5563'} />}
                     {method.id === 'upi' && <Svgdata icon={'upi'} size={20} color={isSelected ? '#3B82F6' : '#4B5563'} />}
                   </View>
-                  <Text className={`text-xs mt-1 ${isSelected ? 'text-blue-600 font-medium' : 'text-gray-600'}`}>
+                  <Text className={`text-xs mt-1 ${isSelected ? 'text-green-600 font-medium' : 'text-gray-600'}`}>
                     {method.title}
                   </Text>
                 </TouchableOpacity>
@@ -142,12 +142,12 @@ const Payments = () => {
 
             {selectedMethod === 'wallet' && (
               <View className="bg-white p-6 rounded-xl items-center">
-                <View className="bg-blue-100 p-4 rounded-full mb-4">
-                  <Wallet size={28} color="#3B82F6" />
+                <View className="bg-green-100 p-4 rounded-full mb-4">
+                  <Wallet size={28} color="green" />
                 </View>
                 <Text className="text-gray-500 mb-1">Wallet Balance</Text>
                 <Text className="text-3xl font-bold text-gray-800 mb-6">₹1,245.50</Text>
-                <TouchableOpacity className="bg-blue-500 px-6 py-3 rounded-full">
+                <TouchableOpacity className="bg-green-500 px-6 py-3 rounded-full">
                   <Text className="text-white font-medium">Add Money</Text>
                 </TouchableOpacity>
               </View>
@@ -156,7 +156,7 @@ const Payments = () => {
             {selectedMethod === 'upi' && (
               <View className="bg-white p-6 rounded-xl">
                 <Text className="text-sm font-medium text-gray-500 mb-4">Saved UPI ID</Text>
-                <View className="flex-row items-center justify-between p-4 bg-blue-50 rounded-lg mb-6">
+                <View className="flex-row items-center justify-between p-4 bg-green-50 rounded-lg mb-6">
                   <Text className="text-gray-800 font-medium">user@upi</Text>
                   <Check size={20} color="#10B981" />
                 </View>

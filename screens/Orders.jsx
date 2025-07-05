@@ -4,55 +4,62 @@ import { Package, ShoppingCart, ChevronRight } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
 
-// Dummy product images (in a real app, these would come from your backend)
-const productImages = [
-  'https://i.pinimg.com/736x/4e/a5/c8/4ea5c8c480625906a692bafa65ba7aad.jpg',
-  'https://i.pinimg.com/736x/2b/c5/a6/2bc5a6a8634fbb69ba0e066aa5676c39.jpg',
-  'https://i.pinimg.com/736x/b5/d5/61/b5d56134cc60550895d3368d6b8a5428.jpg',
-];
-
 export default function Orders() {
   const orders = [
     {
       id: 'ORD001',
-      date: 'June 25, 2025',
+      date: 'July 1, 2025',
       status: 'Delivered',
-      total: '₹45.00',
+      total: '₹450.00',
       items: 3,
       products: [
-        { name: 'Wireless Headphones', price: '₹25.00', image: productImages[0] },
-        { name: 'Smart Watch', price: '₹15.00', image: productImages[1] },
-        { name: 'Phone Case', price: '₹5.00', image: productImages[2] },
+        { name: 'Fresh Apples (1kg)', price: '₹150.00', image: 'https://i.pinimg.com/736x/4a/de/37/4ade3729109e48e14e0e3126f49df099.jpg' },
+        { name: 'Organic Milk (1L)', price: '₹80.00', image: 'https://placehold.co/60x60/4CAF50/FFFFFF?text=Item2' },
+        { name: 'Brown Bread', price: '₹50.00', image: 'https://placehold.co/60x60/689F38/FFFFFF?text=Item3' },
       ],
-      deliveryAddress: '123 Main St, Anytown, USA',
-      deliveryDate: 'June 28, 2025',
+      deliveryAddress: '123 Main St, Garden City, India',
+      deliveryDate: 'July 1, 2025',
     },
     {
       id: 'ORD002',
-      date: 'June 20, 2025',
-      status: 'Shipped',
-      total: '₹75.50',
+      date: 'June 28, 2025',
+      status: 'Out for Delivery',
+      total: '₹750.50',
       items: 2,
       products: [
-        { name: 'Bluetooth Speaker', price: '₹45.50', image: productImages[1] },
-        { name: 'USB Cable Pack', price: '₹30.00', image: productImages[2] },
+        { name: 'Basmati Rice (5kg)', price: '₹450.50', image: 'https://placehold.co/60x60/4CAF50/FFFFFF?text=Item2' },
+        { name: 'Dal (1kg)', price: '₹300.00', image: 'https://placehold.co/60x60/7CB342/FFFFFF?text=Item4' },
       ],
-      deliveryAddress: '456 Oak Ave, Anytown, USA',
+      deliveryAddress: '456 Green Valley Rd, Tech Park, India',
       deliveryDate: 'July 5, 2025',
-      trackingNumber: 'TRK123456789',
     },
     {
       id: 'ORD003',
-      date: 'June 18, 2025',
+      date: 'June 25, 2025',
       status: 'Cancelled',
-      total: '₹20.00',
+      total: '₹200.00',
       items: 1,
       products: [
-        { name: 'Screen Protector', price: '₹20.00', image: productImages[0] },
+        { name: 'Olive Oil (1L)', price: '₹200.00', image: 'https://placehold.co/60x60/8BC34A/FFFFFF?text=Item1' },
       ],
-      deliveryAddress: '789 Pine Ln, Anytown, USA',
+      deliveryAddress: '789 Lake View Apt, Downtown, India',
       cancellationReason: 'Customer request',
     },
+    {
+      id: 'ORD004',
+      date: 'June 20, 2025',
+      status: 'Confirmed',
+      total: '₹320.00',
+      items: 4,
+      products: [
+        { name: 'Potatoes (2kg)', price: '₹80.00', image: 'https://placehold.co/60x60/689F38/FFFFFF?text=Item3' },
+        { name: 'Onions (1kg)', price: '₹40.00', image: 'https://placehold.co/60x60/8BC34A/FFFFFF?text=Item1' },
+        { name: 'Tomatoes (1kg)', price: '₹60.00', image: 'https://placehold.co/60x60/4CAF50/FFFFFF?text=Item2' },
+        { name: 'Spinach (500g)', price: '₹140.00', image: 'https://placehold.co/60x60/7CB342/FFFFFF?text=Item4' },
+      ],
+      deliveryAddress: '101 City Center, New Area, India',
+      deliveryDate: 'July 6, 2025',
+    }
   ];
 
   const navigation = useNavigation();
@@ -60,20 +67,20 @@ export default function Orders() {
   const getStatusColor = (status) => {
     switch (status) {
       case 'Delivered': return { bg: 'bg-green-50', text: 'text-green-700', border: 'border-green-100' };
-      case 'Shipped': return { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-100' };
+      case 'Out for Delivery': return { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-100' };
       case 'Cancelled': return { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-100' };
+      case 'Confirmed': return { bg: 'bg-yellow-50', text: 'text-yellow-700', border: 'border-yellow-100' };
       default: return { bg: 'bg-gray-50', text: 'text-gray-700', border: 'border-gray-100' };
     }
   };
 
-  const renderOrderItem = (order) => {
+  const RenderOrderItem = (order) => {
     const statusColor = getStatusColor(order.status);
     
     return (
       <TouchableOpacity 
         key={order.id} 
         className={`mb-4 rounded-lg border ${statusColor.border} overflow-hidden`}
-        // onPress={() => navigation.navigate('OrderDetails', { order })}
       >
         <View className={`p-4 ${statusColor.bg}`}>
           <View className="flex-row justify-between items-start mb-2">
@@ -90,10 +97,6 @@ export default function Orders() {
               </View>
             </View>
           </View>
-          
-          {order.status === 'Shipped' && order.trackingNumber && (
-            <Text className="text-xs text-blue-600 mt-1">Tracking #: {order.trackingNumber}</Text>
-          )}
         </View>
         
         <View className="bg-white p-4">
@@ -130,7 +133,7 @@ export default function Orders() {
     <View className="flex-1 bg-gray-50">
       <BackHeader title="My Orders" />
       
-      <ScrollView className="flex-1 px-4 pt-2">
+      <ScrollView className="flex-1 px-4 pt-2 mb-20">
         {orders.length === 0 ? (
           <View className="flex-1 items-center justify-center mt-20">
             <ShoppingCart size={48} color="#9CA3AF" />
@@ -147,7 +150,7 @@ export default function Orders() {
           </View>
         ) : (
           <>
-            {orders.map(renderOrderItem)}
+            {orders.map(order => RenderOrderItem(order))}
           </>
         )}
       </ScrollView>

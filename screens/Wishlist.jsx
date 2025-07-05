@@ -1,38 +1,36 @@
 import BackHeader from 'components/BackHeader';
-import { Heart, ArrowLeft, Tag, ShoppingCart, Minus, Plus } from 'lucide-react-native'; // Importing relevant Lucide icons for React Native
+import { Heart, ArrowLeft, Tag, ShoppingCart, Minus, Plus } from 'lucide-react-native';
 import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native'; // React Native components, including Image for product images
+import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
 
 export default function Wishlist() {
-  // Mock data for wishlist items. Prices are now in Indian Rupees.
   const wishlistItems = [
     {
       id: 'WL001',
       name: 'Wireless Bluetooth Headphones',
-      price: '₹9,999', 
+      price: '₹9,999',
       imageUrl: 'https://i.pinimg.com/736x/67/2a/2e/672a2eca2b68c1ab9d960e8a864e3e17.jpg',
       description: 'High-quality sound with noise cancellation.',
     },
     {
       id: 'WL002',
       name: 'Smartwatch Series 7',
-      price: '₹24,999', 
+      price: '₹24,999',
       imageUrl: 'https://i.pinimg.com/736x/07/dc/d4/07dcd45cd41417dde08fed1772fe708f.jpg',
       description: 'Track your fitness and receive notifications.',
     },
     {
       id: 'WL003',
       name: 'Ergonomic Office Chair',
-      price: '₹29,000', 
+      price: '₹29,000',
       imageUrl: 'https://i.pinimg.com/736x/59/4f/51/594f51bef80afe17f27c0d01b1bf8e9c.jpg',
       description: 'Comfortable and supportive for long working hours.',
     },
   ];
 
-  // Set to an empty array to simulate "No items in wishlist yet"
   const emptyWishlist = [];
 
-  const displayWishlist = wishlistItems; // Change this to 'emptyWishlist' to test the empty state
+  const displayWishlist = wishlistItems;
 
   return (
     <ScrollView className="flex-1 bg-gray-100 pb-20"> {/* Added pb-20 for bottom padding */}

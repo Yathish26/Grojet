@@ -76,7 +76,7 @@ export default function CategoryTabs({ categories, selectedCategory, setSelected
                     }],
                     marginLeft: tabWidth * 0.2,
                 }}
-                className="h-1 bg-green-600 rounded-full absolute bottom-0"
+                className="h-1 bg-green-600 rounded-t-3xl absolute bottom-0"
             />
         </View>
     );
