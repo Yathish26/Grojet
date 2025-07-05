@@ -12,6 +12,11 @@ import Addresses from 'screens/Addresses';
 import Orders from 'screens/Orders';
 import Wishlist from 'screens/Wishlist';
 import AboutUs from 'screens/Aboutus';
+import NewAddress from 'screens/NewAddress';
+import Payments from 'screens/Payments';
+import Login from 'screens/Login';
+import Register from 'screens/Register';
+import ForgotPassword from 'ForgotPassword';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,8 +32,7 @@ export default function App() {
   const [currentRoute, setCurrentRoute] = useState('Home');
   const navigationRef = useRef();
 
-  const systemScheme = useColorScheme();
-  // console.log("Device theme is:", systemScheme);
+  const navs = ['Home', 'Orders', 'Profile'];
 
 
   return (
@@ -42,17 +46,24 @@ export default function App() {
             if (route) setCurrentRoute(route.name);
           }}
         >
-          <Stack.Navigator screenOptions={{ headerShown: false, animation: 'fade' }} initialRouteName="Home">
+          <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Home">
+            <Stack.Screen name="Register" component={Register} />
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="Profile" component={Profile} />
+            <Stack.Screen name="Payments" component={Payments} />
             <Stack.Screen name="AddressBook" component={Addresses} />
+            <Stack.Screen name="AddNewAddress" component={NewAddress} />
             <Stack.Screen name="Orders" component={Orders} />
             <Stack.Screen name="Wishlist" component={Wishlist} />
             <Stack.Screen name="Aboutus" component={AboutUs} />
           </Stack.Navigator>
 
           <StatusBar style="auto" />
-          <BottomNav currentRoute={currentRoute} />
+          {navs.includes(currentRoute) && (
+            <BottomNav currentRoute={currentRoute} />
+          )}
         </NavigationContainer>
       </SafeAreaView>
     </SafeAreaProvider>

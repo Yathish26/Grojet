@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, TextInput, Platform, StyleSheet } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { Box, CircleUserRoundIcon, Flame, Gift, Home, Layers2, Locate, Navigation2, Package, PaintRoller, PlugZap, ReceiptText, Search, ShoppingCart, Tv, Umbrella, UserRound, Vegan, Volleyball, Wheat, X } from 'lucide-react-native';
+import { Bell, Box, CircleUserRoundIcon, Flame, Gift, Home, Layers2, Leaf, LeafyGreen, Locate, Navigation2, Package, PaintRoller, PlugZap, ReceiptText, Search, ShoppingCart, Tv, Umbrella, UserRound, Vegan, Volleyball, Wheat, X } from 'lucide-react-native';
 import Svg, { Path } from "react-native-svg";
 import { LinearGradient } from 'expo-linear-gradient';
 import Svgdata from 'components/Svgdata';
+import CategoryTabs from 'components/CategoryTabs';
 
 // Dummy data for categories, bestsellers, and grocery items
 const categories = [
   {
     id: 'all',
     name: 'All',
-    Icon: <ReceiptText size={20} color="#4A5568" />,
+    Icon: <Svgdata icon="all" className="w-5 h-5" color="#4A5568" size={20} />,
     isNew: false,
   },
   {
@@ -23,19 +24,19 @@ const categories = [
   {
     id: 'pulses',
     name: 'Pulses',
-    Icon: <Svgdata icon="leaf" className="w-5 h-5" color="#4A5568" size={20} />,
+    Icon: <Svgdata icon="pulses" className="w-5 h-5" color="#4A5568" size={20} />,
     isNew: false,
   },
   {
     id: 'spices',
     name: 'Spices',
-    Icon: <Flame size={20} color="#4A5568" />,
+    Icon: <Svgdata icon="spices" className="w-5 h-5" color="#4A5568" size={20} />,
     isNew: false,
   },
   {
     id: 'others',
     name: 'Others',
-    Icon: <Gift size={20} color="#4A5568" />,
+    Icon: <LeafyGreen size={20} color="#4A5568" />,
     isNew: false,
   },
 ];
@@ -127,9 +128,9 @@ export default function HomeScreen({ navigation }) {
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
 
-      {/* Top Bar (Blinkit Header) */}
+      {/* Top Bar */}
       <LinearGradient
-        colors={['#ffffff', '#e1f7df']} // adjust gradient colors
+        colors={['#ffffff', '#039e18']}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         className="px-4 pb-3 border-b border-gray-100"
@@ -141,7 +142,7 @@ export default function HomeScreen({ navigation }) {
             resizeMode="contain"
           />
           <View className="bg-white/30 p-2 rounded-full">
-            <CircleUserRoundIcon size={24} color="black" />
+            <Bell size={24} color="#4a4a4a" />
           </View>
         </View>
 
@@ -195,42 +196,9 @@ export default function HomeScreen({ navigation }) {
       </LinearGradient>
 
 
-      <ScrollView className="flex-1 pb-20"> {/* Add padding for bottom nav */}
+      <ScrollView className="flex-1 pb-20">
         {/* Horizontal Category Scroll */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          className="py-3 px-4  border-b border-gray-200"
-        >
-          {categories.map((cat) => (
-            <TouchableOpacity
-              key={cat.id}
-              onPress={() => setSelectedCategory(cat.id)}
-              className={`relative items-center mx-2 px-4 py-3 rounded-2xl flex-col
-        ${selectedCategory === cat.id ? 'bg-blue-100' : 'bg-gray-100'}`}
-            >
-              {/* New badge */}
-              {cat.isNew && (
-                <View className="absolute top-0 right-0 bg-red-500 rounded-full px-1 py-0.5 -mt-2 -mr-2 z-10">
-                  <Text className="text-white text-[10px] font-bold">NEW</Text>
-                </View>
-              )}
-
-              {/* Icon */}
-              <View className="mb-1">
-                {cat.Icon}
-              </View>
-
-              {/* Label */}
-              <Text
-                className={`text-xs font-semibold ${selectedCategory === cat.id ? 'text-blue-700' : 'text-gray-700'
-                  }`}
-              >
-                {cat.name}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+        <CategoryTabs categories={categories} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
 
 
         {/* Bestsellers Section */}

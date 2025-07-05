@@ -139,7 +139,7 @@ export default function Orders() {
               Your orders will appear here once you've made a purchase
             </Text>
             <TouchableOpacity 
-              className="mt-6 bg-blue-600 px-6 py-3 rounded-lg"
+              className="mt-6 bg-green-600 px-6 py-3 rounded-lg"
               onPress={() => navigation.navigate('Home')}
             >
               <Text className="text-white font-medium">Start Shopping</Text>
