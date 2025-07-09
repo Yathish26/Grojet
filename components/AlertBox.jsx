@@ -1,5 +1,3 @@
-import { CircleAlert } from 'lucide-react-native';
-import React from 'react';
 import { TouchableOpacity, Text, View, TouchableWithoutFeedback } from 'react-native';
 
 export default function AlertBox({ title, message, onb1, onb2, b1, b2 }) {
@@ -14,9 +12,6 @@ export default function AlertBox({ title, message, onb1, onb2, b1, b2 }) {
             <View className="bg-white rounded-xl p-6 w-full max-w-sm shadow-lg">
                 {/* Header with icon */}
                 <View className="items-center mb-4">
-                    <View className="bg-red-100 p-3 rounded-full mb-3">
-                        <CircleAlert size={40} color="#f87171" />
-                    </View>
                     <Text className="text-xl font-bold text-gray-800 text-center">{title}</Text>
                 </View>
 
@@ -37,7 +32,7 @@ export default function AlertBox({ title, message, onb1, onb2, b1, b2 }) {
                     <TouchableOpacity
                         onPress={onb2}
                         activeOpacity={0.8}
-                        className="flex-1 bg-red-500 px-4 py-3 rounded-lg"
+                        className="flex-1 bg-green-500 px-4 py-3 rounded-lg"
                     >
                         <Text className="text-white text-center font-medium">{b2}</Text>
                     </TouchableOpacity>

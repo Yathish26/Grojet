@@ -4,7 +4,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import './global.css';
-import { useColorScheme } from 'react-native';
 import HomeScreen from './screens/Homescreen';
 import Profile from './screens/Profile';
 import BottomNav from './components/BottomNav';
