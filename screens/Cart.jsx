@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ChevronRight, ShoppingCart, Plus, Minus, ArrowRight } from 'lucide-react-native';
+import { ShoppingCart, Plus, Minus, ArrowRight } from 'lucide-react-native';
 import BackHeader from 'components/BackHeader';
 
 export default function Cart() {
