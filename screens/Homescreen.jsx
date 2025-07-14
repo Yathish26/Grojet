@@ -16,10 +16,14 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Svgdata from 'components/Svgdata';
 import CategoryTabs from 'components/CategoryTabs';
 import Svg, { Path } from 'react-native-svg';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
+
 
 // Product data
 const allProducts = [
-  { id: '1', name: 'Wheat', price: '27.50 - 34', category: 'grains', image: 'https://i.pinimg.com/736x/59/2e/58/592e58975c0849dd99d971daa89dcccc.jpg' },
+  { id: '1', name: 'Wheat', price: '27.50', category: 'grains', image: 'https://i.pinimg.com/736x/59/2e/58/592e58975c0849dd99d971daa89dcccc.jpg' },
   { id: '2', name: 'Maize Hyb.', price: '27.50', category: 'grains', image: 'https://i.pinimg.com/736x/67/cb/9f/67cb9f8f23d481e8087efddea69079c2.jpg' },
   { id: '3', name: 'Maize Desi', price: '30.50', category: 'grains', image: 'https://i.pinimg.com/736x/ed/8d/0f/ed8d0f872e5209d0d72996576ad3a6e7.jpg' },
   { id: '4', name: 'Bajra', price: '26.50', category: 'grains', image: 'https://i.pinimg.com/736x/4b/f0/4c/4bf04c342db0e63de082fce7f21902c2.jpg' },
@@ -109,7 +113,7 @@ export default function HomeScreen({ navigation }) {
 
     Animated.sequence([
       Animated.timing(bounceValue, {
-        toValue: 1.5,
+        toValue: 1.3,
         duration: 100,
         easing: Easing.linear,
         useNativeDriver: true
@@ -136,15 +140,64 @@ export default function HomeScreen({ navigation }) {
         return prevItems.filter(item => item.id !== productId);
       }
     });
+    Animated.sequence([
+      Animated.timing(bounceValue, {
+        toValue: 1.3,
+        duration: 100,
+        easing: Easing.linear,
+        useNativeDriver: true
+      }),
+      Animated.timing(bounceValue, {
+        toValue: 1,
+        duration: 100,
+        easing: Easing.linear,
+        useNativeDriver: true
+      })
+    ]).start();
   };
 
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  useFocusEffect(
+    useCallback(() => {
+      const loadCart = async () => {
+        try {
+          const storedCart = await AsyncStorage.getItem('cart');
+          if (storedCart) {
+            setCartItems(JSON.parse(storedCart));
+          } else {
+            setCartItems([]);
+          }
+        } catch (error) {
+          console.log('Error loading cart on focus', error);
+        }
+      };
+
+      loadCart();
+    }, [])
+  );
+
+
+  useEffect(() => {
+    const saveCart = async () => {
+      try {
+        await AsyncStorage.setItem('cart', JSON.stringify(cartItems));
+      } catch (error) {
+        console.log('Failed to save cart to storage', error);
+      }
+    };
+
+    saveCart();
+  }, [cartItems]);
+
+  // await AsyncStorage.removeItem('cart');
+  // setCartItems([]);
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
       {/* Top Bar */}
       <LinearGradient
-        colors={['#ffffff', '#E5FB5C']}
+        colors={['#ffffff', '#32a852']}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         className="px-4 pb-3 border-b rounded-b-3xl border-gray-100"
@@ -247,12 +300,12 @@ export default function HomeScreen({ navigation }) {
 
                   {/* Cart Actions */}
                   {quantity > 0 ? (
-                    <View className="flex-row items-center justify-between bg-green-500 border border-green-100 rounded-full px-1 py-1.5 shadow-sm">
+                    <View className="flex-row items-center justify-between bg-green-500 border border-green-100 rounded-2xl px-1 py-1.5 shadow-sm">
 
                       {/* Minus */}
                       <TouchableOpacity
                         onPress={() => removeFromCart(product.id)}
-                        className="w-8 h-8 bg-white border border-green-200 rounded-full items-center justify-center shadow-sm"
+                        className="w-8 h-8 bg-white border border-green-200 rounded-xl items-center justify-center shadow-sm"
                         activeOpacity={0.8}
                       >
                         <Minus size={18} color="#38A169" />
@@ -264,7 +317,7 @@ export default function HomeScreen({ navigation }) {
                       {/* Plus */}
                       <TouchableOpacity
                         onPress={() => addToCart(product)}
-                        className="w-8 h-8 bg-white border border-green-200 rounded-full items-center justify-center shadow-sm"
+                        className="w-8 h-8 bg-white border border-green-200 rounded-xl items-center justify-center shadow-sm"
                         activeOpacity={0.8}
                       >
                         <Plus size={18} color="#38A169" />
@@ -311,7 +364,7 @@ export default function HomeScreen({ navigation }) {
       {totalItems > 0 && (
         <Animated.View
           style={[styles.cartButton, { transform: [{ scale: bounceValue }] }]}
-          className="absolute bottom-24 right-5 bg-green-600 rounded-full p-4 shadow-lg"
+          className="absolute bottom-24 right-5 bg-green-600 rounded-xl p-4 shadow-lg"
         >
           <TouchableOpacity
             onPress={() => navigation.navigate('Cart', { cartItems })}

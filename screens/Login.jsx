@@ -58,7 +58,7 @@ const Login = ({ navigation }) => {
                 contentContainerStyle={{ paddingTop: 200 }}
             >
                 {/* Content Card */}
-                <View className="bg-white mx-6 p-6 rounded-2xl shadow-xl z-10"> {/* Removed mt-48 here */}
+                <View className="bg-white mx-6 p-6 rounded-2xl shadow-xl z-10">
                     <Text className="text-2xl font-bold text-gray-900 mb-2 text-center">Login</Text>
                     <Text className="text-gray-500 text-base mb-8 text-center">Enter your details below</Text>
 
@@ -104,7 +104,6 @@ const Login = ({ navigation }) => {
                         {errors.password && <Text className="text-red-500 text-xs mt-1 ml-1">{errors.password}</Text>}
                     </View>
 
-                    {/* Forgot Password Link */}
                     <TouchableOpacity
                         className="items-center mb-6"
                         onPress={() => navigation.navigate('ForgotPassword')}
@@ -112,7 +111,6 @@ const Login = ({ navigation }) => {
                         <Text className="text-gray-500 font-medium text-sm">Forgot your password?</Text>
                     </TouchableOpacity>
 
-                    {/* Login Button (Simplified - no gradient) */}
                     <TouchableOpacity
                         onPress={handleSubmit}
                         className="bg-green-500 py-4 rounded-xl items-center justify-center shadow-md mb-6" 
@@ -126,7 +124,6 @@ const Login = ({ navigation }) => {
                         )}
                     </TouchableOpacity>
 
-                    {/* Social Login Options */}
                     <View className="mb-6">
                         <View className="flex-row items-center mb-4">
                             <View className="flex-1 h-px bg-gray-300" />

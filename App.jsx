@@ -19,6 +19,10 @@ import ForgotPassword from 'ForgotPassword';
 import Support from 'screens/Support';
 import AccountPrivacy from 'screens/AccountPrivacy';
 import Notifications from 'screens/Notifications';
+import Cart from 'screens/Cart';
+import Test from 'screens/Test';
+import DeleteAccount from 'screens/DeleteAccount';
+import DeleteFinal from 'screens/DeleteFinal';
 
 const Stack = createNativeStackNavigator();
 
@@ -63,6 +67,10 @@ export default function App() {
             <Stack.Screen name="Support" component={Support} />
             <Stack.Screen name="AccountPrivacy" component={AccountPrivacy} />
             <Stack.Screen name="Notifications" component={Notifications} />
+            <Stack.Screen name="Cart" component={Cart} />
+            <Stack.Screen name="DeleteAccount" component={DeleteAccount} />
+            <Stack.Screen name="DeleteFinal" component={DeleteFinal} />
+            <Stack.Screen name="Test" component={Test} />
           </Stack.Navigator>
 
           <StatusBar style="auto" />

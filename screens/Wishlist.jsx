@@ -33,13 +33,11 @@ export default function Wishlist() {
   const displayWishlist = wishlistItems;
 
   return (
-    <ScrollView className="flex-1 bg-gray-100 pb-20"> {/* Added pb-20 for bottom padding */}
-      {/* Header with back button */}
+    <ScrollView className="flex-1 bg-gray-100 pb-20">
       <BackHeader title="My Wishlist" />
 
       <View className="p-4">
         {displayWishlist.length === 0 ? (
-          /* No items in wishlist yet message */
           <View className="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 mb-4 flex items-center justify-center h-48">
             <View className="flex-col items-center">
               <Heart size={48} color="#9CA3AF" className="mx-auto mb-4" />
@@ -48,7 +46,6 @@ export default function Wishlist() {
             </View>
           </View>
         ) : (
-          /* List of wishlist items */
           displayWishlist.map((item) => (
             <View key={item.id} className="flex-row bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-3">
               <Image source={{ uri: item.imageUrl }} resizeMode='contain' className="w-20 h-20 rounded-lg mr-4" />

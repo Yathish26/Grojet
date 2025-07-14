@@ -40,7 +40,7 @@ const Notifications = () => {
       <BackHeader title="Notifications" />
 
       <ScrollView className="flex-1 p-4" contentContainerStyle={{ paddingBottom: 20 }}>
-        <View className="bg-white mx-2 p-5 rounded-xl shadow-md border border-gray-100 mb-6">
+        <View className="bg-white mx-2 p-5 rounded-xl shadow-sm border border-gray-100 mb-6">
           <Text className="text-xs uppercase text-gray-500 font-bold mb-4 tracking-wide">General Notifications</Text>
 
           <View className="flex-row items-center justify-between py-3 border-b border-gray-100">
@@ -72,7 +72,7 @@ const Notifications = () => {
           </View>
         </View>
 
-        <View className="bg-white mx-2 p-5 rounded-xl shadow-md border border-gray-100 mb-6">
+        <View className="bg-white mx-2 p-5 rounded-xl shadow-sm border border-gray-100 mb-6">
           <Text className="text-xs uppercase text-gray-500 font-bold mb-4 tracking-wide">Specific Alerts</Text>
 
           <View className="flex-row items-center justify-between py-3 border-b border-gray-100">

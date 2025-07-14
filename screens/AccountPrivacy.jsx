@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
-import { Lock, Eye, EyeOff } from 'lucide-react-native';
+import { Lock, Eye, EyeOff, Trash, Trash2, ChevronRight } from 'lucide-react-native';
 import BackHeader from 'components/BackHeader';
 import { useNavigation } from '@react-navigation/native';
 
@@ -54,76 +54,133 @@ const AccountPrivacy = () => {
     >
       <BackHeader title="Account Privacy" />
 
-      <ScrollView className="flex-1 p-4" keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingBottom: 20}}>
-        <View className="bg-white mx-2 p-5 rounded-xl shadow-md border border-gray-100 mb-6">
-          <Text className="text-xs uppercase text-gray-500 font-bold mb-4 tracking-wide">Change Password</Text>
+      <ScrollView
+        className="flex-1"
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{ paddingBottom: 40, paddingTop: 16 }}
+      >
+        {/* Password Change Card */}
+        <View className="bg-white mx-4 p-6 rounded-2xl shadow-sm border border-gray-100 mb-6">
+          <Text className="text-xs uppercase text-gray-500 font-bold mb-5 tracking-wider">Change Password</Text>
 
-          <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-600 mb-1">Current Password</Text>
-            <View className={`flex-row items-center bg-gray-50 rounded-xl border ${passwordErrors.currentPassword ? 'border-red-400' : 'border-gray-200'} p-4`}>
+          {/* Current Password */}
+          <View className="mb-5">
+            <Text className="text-sm font-medium text-gray-600 mb-2">Current Password</Text>
+            <View className={`flex-row items-center bg-gray-50 rounded-xl border ${passwordErrors.currentPassword ? 'border-red-400' : 'border-gray-200'} px-4 h-14`}>
               <Lock size={18} color="#6B7280" className="mr-3" />
               <TextInput
-                placeholder="••••••••"
+                placeholder="Enter current password"
                 value={passwordFormData.currentPassword}
                 onChangeText={(text) => handleChangePassword('currentPassword', text)}
                 secureTextEntry={!showCurrentPassword}
                 className="flex-1 text-gray-800 font-medium"
                 placeholderTextColor="#9CA3AF"
               />
-              <TouchableOpacity onPress={() => setShowCurrentPassword(!showCurrentPassword)}>
-                {showCurrentPassword ? (<EyeOff size={18} color="#6B7280" />) : (<Eye size={18} color="#6B7280" />)}
+              <TouchableOpacity
+                onPress={() => setShowCurrentPassword(!showCurrentPassword)}
+                className="p-2"
+              >
+                {showCurrentPassword ?
+                  <EyeOff size={18} color="#6B7280" /> :
+                  <Eye size={18} color="#6B7280" />
+                }
               </TouchableOpacity>
             </View>
-            {passwordErrors.currentPassword && <Text className="text-red-500 text-xs mt-1 ml-1">{passwordErrors.currentPassword}</Text>}
+            {passwordErrors.currentPassword &&
+              <Text className="text-red-500 text-xs mt-1.5 ml-1">{passwordErrors.currentPassword}</Text>
+            }
           </View>
 
-          <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-600 mb-1">New Password</Text>
-            <View className={`flex-row items-center bg-gray-50 rounded-xl border ${passwordErrors.newPassword ? 'border-red-400' : 'border-gray-200'} p-4`}>
+          {/* New Password */}
+          <View className="mb-5">
+            <Text className="text-sm font-medium text-gray-600 mb-2">New Password</Text>
+            <View className={`flex-row items-center bg-gray-50 rounded-xl border ${passwordErrors.newPassword ? 'border-red-400' : 'border-gray-200'} px-4 h-14`}>
               <Lock size={18} color="#6B7280" className="mr-3" />
               <TextInput
-                placeholder="••••••••"
+                placeholder="Create new password"
                 value={passwordFormData.newPassword}
                 onChangeText={(text) => handleChangePassword('newPassword', text)}
                 secureTextEntry={!showNewPassword}
                 className="flex-1 text-gray-800 font-medium"
                 placeholderTextColor="#9CA3AF"
               />
-              <TouchableOpacity onPress={() => setShowNewPassword(!showNewPassword)}>
-                {showNewPassword ? (<EyeOff size={18} color="#6B7280" />) : (<Eye size={18} color="#6B7280" />)}
+              <TouchableOpacity
+                onPress={() => setShowNewPassword(!showNewPassword)}
+                className="p-2"
+              >
+                {showNewPassword ?
+                  <EyeOff size={18} color="#6B7280" /> :
+                  <Eye size={18} color="#6B7280" />
+                }
               </TouchableOpacity>
             </View>
-            {passwordErrors.newPassword && <Text className="text-red-500 text-xs mt-1 ml-1">{passwordErrors.newPassword}</Text>}
+            {passwordErrors.newPassword &&
+              <Text className="text-red-500 text-xs mt-1.5 ml-1">{passwordErrors.newPassword}</Text>
+            }
           </View>
 
+          {/* Confirm Password */}
           <View className="mb-6">
-            <Text className="text-sm font-medium text-gray-600 mb-1">Confirm New Password</Text>
-            <View className={`flex-row items-center bg-gray-50 rounded-xl border ${passwordErrors.confirmNewPassword ? 'border-red-400' : 'border-gray-200'} p-4`}>
+            <Text className="text-sm font-medium text-gray-600 mb-2">Confirm New Password</Text>
+            <View className={`flex-row items-center bg-gray-50 rounded-xl border ${passwordErrors.confirmNewPassword ? 'border-red-400' : 'border-gray-200'} px-4 h-14`}>
               <Lock size={18} color="#6B7280" className="mr-3" />
               <TextInput
-                placeholder="••••••••"
+                placeholder="Re-enter new password"
                 value={passwordFormData.confirmNewPassword}
                 onChangeText={(text) => handleChangePassword('confirmNewPassword', text)}
                 secureTextEntry={!showConfirmNewPassword}
                 className="flex-1 text-gray-800 font-medium"
                 placeholderTextColor="#9CA3AF"
               />
-              <TouchableOpacity onPress={() => setShowConfirmNewPassword(!showConfirmNewPassword)}>
-                {showConfirmNewPassword ? (<EyeOff size={18} color="#6B7280" />) : (<Eye size={18} color="#6B7280" />)}
+              <TouchableOpacity
+                onPress={() => setShowConfirmNewPassword(!showConfirmNewPassword)}
+                className="p-2"
+              >
+                {showConfirmNewPassword ?
+                  <EyeOff size={18} color="#6B7280" /> :
+                  <Eye size={18} color="#6B7280" />
+                }
               </TouchableOpacity>
             </View>
-            {passwordErrors.confirmNewPassword && <Text className="text-red-500 text-xs mt-1 ml-1">{passwordErrors.confirmNewPassword}</Text>}
+            {passwordErrors.confirmNewPassword &&
+              <Text className="text-red-500 text-xs mt-1.5 ml-1">{passwordErrors.confirmNewPassword}</Text>
+            }
           </View>
 
+          {/* Submit Button */}
           <TouchableOpacity
             onPress={handlePasswordChangeSubmit}
-            className="bg-[#388E3C] py-4 rounded-xl items-center justify-center shadow-md"
+            className={`bg-green-600 py-4 rounded-xl items-center justify-center ${isPasswordChanging ? 'opacity-80' : ''}`}
             activeOpacity={0.9}
             disabled={isPasswordChanging}
           >
-            <Text className="text-white font-bold text-lg">
-              {isPasswordChanging ? 'Changing...' : 'Change Password'}
+            <Text className="text-white font-bold text-base">
+              {isPasswordChanging ? (
+                <ActivityIndicator color="white" size="small" />
+              ) : (
+                'Change Password'
+              )}
             </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Account Deletion Card */}
+        <View className="bg-white mx-4 p-6 rounded-2xl shadow-sm border border-gray-100">
+          <Text className="text-xs uppercase text-gray-500 font-bold mb-5 tracking-wider">Account Termination</Text>
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate('DeleteAccount')}
+            className="flex-row items-center justify-between p-4 bg-green-50 rounded-xl border border-green-100"
+            activeOpacity={0.8}
+          >
+            <View className="flex-row items-center gap-2">
+              <Trash2 size={20} color="green" className="mr-3" />
+              <View>
+                <Text className="text-gray-900 font-semibold">Delete Account</Text>
+                <Text className="text-gray-500 text-xs mt-0.5">Permanent action - cannot be undone</Text>
+              </View>
+            </View>
+            <ChevronRight size={20} color="#6B7280" />
           </TouchableOpacity>
         </View>
       </ScrollView>
