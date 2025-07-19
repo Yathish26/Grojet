@@ -208,9 +208,9 @@ export default function HomeScreen({ navigation }) {
             className="w-32 h-16"
             resizeMode="contain"
           />
-          <View className="bg-white/30 p-2 rounded-full">
+          <TouchableOpacity onPress={() => navigation.navigate('OffersInfo')} className="bg-white/30 p-2 rounded-full">
             <Bell size={24} color="#4a4a4a" />
-          </View>
+          </TouchableOpacity>
         </View>
 
         <TouchableOpacity className="flex-row items-center mt-2">
@@ -300,33 +300,41 @@ export default function HomeScreen({ navigation }) {
 
                   {/* Cart Actions */}
                   {quantity > 0 ? (
-                    <View className="flex-row items-center justify-between bg-green-500 border border-green-100 rounded-2xl px-1 py-1.5 shadow-sm">
-
-                      {/* Minus */}
-                      <TouchableOpacity
-                        onPress={() => removeFromCart(product.id)}
-                        className="w-8 h-8 bg-white border border-green-200 rounded-xl items-center justify-center shadow-sm"
-                        activeOpacity={0.8}
+                    <View className="rounded-full shadow-md overflow-hidden">
+                      <LinearGradient
+                        colors={['#67f57d', '#1ee83c']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 8, paddingVertical: 8, borderRadius: 999 }}
                       >
-                        <Minus size={18} color="#38A169" />
-                      </TouchableOpacity>
 
-                      {/* Quantity Text */}
-                      <Text className="text-white font-semibold text-base">{quantity}</Text>
+                        {/* Minus Button */}
+                        <TouchableOpacity
+                          onPress={() => removeFromCart(product.id)}
+                          className="w-8 h-8 bg-white border border-green-300 rounded-full items-center justify-center shadow"
+                          activeOpacity={0.9}
+                        >
+                          <Minus size={20} color="#2F855A" />
+                        </TouchableOpacity>
 
-                      {/* Plus */}
-                      <TouchableOpacity
-                        onPress={() => addToCart(product)}
-                        className="w-8 h-8 bg-white border border-green-200 rounded-xl items-center justify-center shadow-sm"
-                        activeOpacity={0.8}
-                      >
-                        <Plus size={18} color="#38A169" />
-                      </TouchableOpacity>
+                        {/* Quantity */}
+                        <Text className="text-white font-bold text-lg mx-3">{quantity}</Text>
+
+                        {/* Plus Button */}
+                        <TouchableOpacity
+                          onPress={() => addToCart(product)}
+                          className="w-8 h-8 bg-white border border-green-300 rounded-full items-center justify-center shadow"
+                          activeOpacity={0.9}
+                        >
+                          <Plus size={20} color="#2F855A" />
+                        </TouchableOpacity>
+
+                      </LinearGradient>
                     </View>
                   ) : (
                     <TouchableOpacity
                       onPress={() => addToCart(product)}
-                      className="bg-white border border-green-200 px-4 py-3 rounded-xl items-center"
+                      className="bg-white border border-green-200 px-4 py-3 rounded-full items-center"
                       activeOpacity={0.9}
                     >
                       <Text className="text-green-600 font-semibold text-base tracking-wide">ADD</Text>

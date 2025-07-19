@@ -23,6 +23,7 @@ import Cart from 'screens/Cart';
 import Test from 'screens/Test';
 import DeleteAccount from 'screens/DeleteAccount';
 import DeleteFinal from 'screens/DeleteFinal';
+import OffersInfo from 'screens/OffersInfo';
 
 const Stack = createNativeStackNavigator();
 
@@ -71,6 +72,7 @@ export default function App() {
             <Stack.Screen name="DeleteAccount" component={DeleteAccount} />
             <Stack.Screen name="DeleteFinal" component={DeleteFinal} />
             <Stack.Screen name="Test" component={Test} />
+            <Stack.Screen name="OffersInfo" component={OffersInfo} />
           </Stack.Navigator>
 
           <StatusBar style="auto" />

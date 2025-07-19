@@ -11,17 +11,16 @@ import {
   Image,
 } from 'react-native';
 import { User, Mail, Lock, Eye, EyeOff } from 'lucide-react-native';
-import Svgdata from 'components/Svgdata';
 
 const Register = ({ navigation }) => {
-  const [formData, setFormData] = React.useState({
+  const [formData, setFormData] = useState({
     fullName: '',
     email: '',
     password: '',
   });
-  const [errors, setErrors] = React.useState({});
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const validateForm = () => {
     const newErrors = {};
@@ -31,22 +30,46 @@ const Register = ({ navigation }) => {
       newErrors.email = 'Invalid email address';
     }
     if (!formData.password) newErrors.password = 'Password is required';
-    else if (formData.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
+    else if (formData.password.length < 6)
+      newErrors.password = 'Password must be at least 6 characters';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = () => {
-    if (validateForm()) {
-      setIsLoading(true);
-      setTimeout(() => {
-        setIsLoading(false);
+  const handleSubmit = async () => {
+    if (!validateForm()) return;
+
+    setIsLoading(true);
+    try {
+      const response = await fetch('http://192.168.1.35:5000/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.fullName,
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Show specific backend message or fallback
+        Alert.alert('Registration Failed', data.msg || 'Please try again later');
+      } else {
         Alert.alert(
           'Registration Successful',
           'Your account has been created!',
           [{ text: 'OK', onPress: () => navigation.navigate('Login') }]
         );
-      }, 2000);
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      Alert.alert('Error', 'Something went wrong. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -57,7 +80,7 @@ const Register = ({ navigation }) => {
 
   return (
     <KeyboardAvoidingView
-      behavior='padding'
+      behavior="padding"
       keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
       className="flex-1 bg-white"
     >
@@ -84,7 +107,11 @@ const Register = ({ navigation }) => {
           {/* Full Name Field */}
           <View className="mb-5">
             <Text className="text-sm font-medium text-gray-500 mb-1">Full Name</Text>
-            <View className={`flex-row items-center bg-gray-50 rounded-xl border px-4 py-3 ${errors.fullName ? 'border-red-400' : 'border-gray-200'}`}>
+            <View
+              className={`flex-row items-center bg-gray-50 rounded-xl border px-4 py-3 ${
+                errors.fullName ? 'border-red-400' : 'border-gray-200'
+              }`}
+            >
               <User size={18} color="#6B7280" style={{ marginRight: 12 }} />
               <TextInput
                 placeholder="Name"
@@ -95,13 +122,19 @@ const Register = ({ navigation }) => {
                 placeholderTextColor="#9CA3AF"
               />
             </View>
-            {errors.fullName && <Text className="text-red-500 text-xs mt-1 ml-1">{errors.fullName}</Text>}
+            {errors.fullName && (
+              <Text className="text-red-500 text-xs mt-1 ml-1">{errors.fullName}</Text>
+            )}
           </View>
 
           {/* Email Field */}
           <View className="mb-5">
             <Text className="text-sm font-medium text-gray-500 mb-1">Email Address</Text>
-            <View className={`flex-row items-center bg-gray-50 rounded-xl border px-4 py-3 ${errors.email ? 'border-red-400' : 'border-gray-200'}`}>
+            <View
+              className={`flex-row items-center bg-gray-50 rounded-xl border px-4 py-3 ${
+                errors.email ? 'border-red-400' : 'border-gray-200'
+              }`}
+            >
               <Mail size={18} color="#6B7280" style={{ marginRight: 12 }} />
               <TextInput
                 placeholder="Email"
@@ -113,13 +146,19 @@ const Register = ({ navigation }) => {
                 placeholderTextColor="#9CA3AF"
               />
             </View>
-            {errors.email && <Text className="text-red-500 text-xs mt-1 ml-1">{errors.email}</Text>}
+            {errors.email && (
+              <Text className="text-red-500 text-xs mt-1 ml-1">{errors.email}</Text>
+            )}
           </View>
 
           {/* Password Field */}
           <View className="mb-5">
             <Text className="text-sm font-medium text-gray-500 mb-1">Password</Text>
-            <View className={`flex-row items-center bg-gray-50 rounded-xl border px-4 py-3 ${errors.password ? 'border-red-400' : 'border-gray-200'}`}>
+            <View
+              className={`flex-row items-center bg-gray-50 rounded-xl border px-4 py-3 ${
+                errors.password ? 'border-red-400' : 'border-gray-200'
+              }`}
+            >
               <Lock size={18} color="#6B7280" style={{ marginRight: 12 }} />
               <TextInput
                 placeholder="Create Password"
@@ -137,13 +176,17 @@ const Register = ({ navigation }) => {
                 )}
               </TouchableOpacity>
             </View>
-            {errors.password && <Text className="text-red-500 text-xs mt-1 ml-1">{errors.password}</Text>}
+            {errors.password && (
+              <Text className="text-red-500 text-xs mt-1 ml-1">{errors.password}</Text>
+            )}
           </View>
 
           {/* Register Button */}
           <TouchableOpacity
             onPress={handleSubmit}
-            className={`bg-green-500 py-4 rounded-xl items-center justify-center mb-6 shadow-md ${isLoading ? 'opacity-60' : ''}`}
+            className={`bg-green-500 py-4 rounded-xl items-center justify-center mb-6 shadow-md ${
+              isLoading ? 'opacity-60' : ''
+            }`}
             activeOpacity={0.9}
             disabled={isLoading}
           >
@@ -152,7 +195,7 @@ const Register = ({ navigation }) => {
             </Text>
           </TouchableOpacity>
 
-          {/* Already have an account? Login Link */}
+          {/* Already have an account? */}
           <View className="flex-row justify-center">
             <Text className="text-gray-500 text-base">Already have an account? </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Login')}>
