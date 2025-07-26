@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import './global.css';
@@ -26,6 +27,7 @@ import DeleteFinal from 'screens/DeleteFinal';
 import OffersInfo from 'screens/OffersInfo';
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 const MyLightTheme = {
   ...DefaultTheme,
@@ -35,34 +37,41 @@ const MyLightTheme = {
   },
 };
 
-export default function App() {
-  const [currentRoute, setCurrentRoute] = useState('Home');
-  const navigationRef = useRef();
+// Tab Navigator for main screens
+function MainTabs() {
+  return (
+    <Tab.Navigator
+      screenOptions={{ headerShown: false }}
+      tabBar={(props) => <BottomNav {...props} />}
+    >
+      <Tab.Screen name="Homescreen" component={HomeScreen} />
+      <Tab.Screen name="Orders" component={Orders} />
+      <Tab.Screen name="Profile" component={Profile} />
+    </Tab.Navigator>
+  );
+}
 
-  const navs = ['Home', 'Orders', 'Profile'];
+export default function App() {
+  const navigationRef = useRef();
 
 
   return (
     <SafeAreaProvider>
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-        <NavigationContainer
-          theme={MyLightTheme}
-          ref={navigationRef}
-          onStateChange={() => {
-            const route = navigationRef.current?.getCurrentRoute();
-            if (route) setCurrentRoute(route.name);
-          }}
-        >
-          <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Home">
+        <NavigationContainer theme={MyLightTheme} ref={navigationRef}>
+          <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="MainTabs">
+            {/* Auth Screens */}
             <Stack.Screen name="Register" component={Register} />
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-            <Stack.Screen name="Home" component={HomeScreen} />
-            <Stack.Screen name="Profile" component={Profile} />
+            
+            {/* Main Tab Navigator */}
+            <Stack.Screen name="MainTabs" component={MainTabs} />
+            
+            {/* Other Screens */}
             <Stack.Screen name="Payments" component={Payments} />
             <Stack.Screen name="AddressBook" component={Addresses} />
             <Stack.Screen name="AddNewAddress" component={NewAddress} />
-            <Stack.Screen name="Orders" component={Orders} />
             <Stack.Screen name="Wishlist" component={Wishlist} />
             <Stack.Screen name="Aboutus" component={AboutUs} />
             <Stack.Screen name="Support" component={Support} />
@@ -76,9 +85,6 @@ export default function App() {
           </Stack.Navigator>
 
           <StatusBar style="auto" />
-          {navs.includes(currentRoute) && (
-            <BottomNav currentRoute={currentRoute} />
-          )}
         </NavigationContainer>
       </SafeAreaView>
     </SafeAreaProvider>

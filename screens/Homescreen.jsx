@@ -19,6 +19,7 @@ import Svg, { Path } from 'react-native-svg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
+import SearchBar from 'components/SearchBar';
 
 
 // Product data
@@ -200,7 +201,12 @@ export default function HomeScreen({ navigation }) {
         colors={['#ffffff', '#32a852']}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
-        className="px-4 pb-3 border-b rounded-b-3xl border-gray-100"
+        style={{
+          paddingHorizontal: 16, // px-4 = 16
+          paddingBottom: 12,     // pb-3 = 12 (pb-3 is usually 12px in Tailwind)
+          borderBottomWidth: 1,  // border-b
+          borderBottomColor: '#f3f4f6', // border-gray-100
+        }}
       >
         <View className="flex-row justify-between items-center mt-3">
           <Image
@@ -241,23 +247,7 @@ export default function HomeScreen({ navigation }) {
         </TouchableOpacity>
 
         {/* Search Bar */}
-        <View className="py-4">
-          <View className="flex-row items-center bg-white rounded-xl shadow-md px-4 py-1">
-            <Search className="w-5 h-5" color="#666" size={20} />
-            <TextInput
-              className="flex-1 text-gray-800 text-base px-3"
-              value={searchtext}
-              onChangeText={setSearchText}
-              placeholder="Search 'coconut'"
-              placeholderTextColor="#999"
-            />
-            {searchtext.length > 0 && (
-              <TouchableOpacity onPress={() => setSearchText('')}>
-                <X size={20} color="#666" />
-              </TouchableOpacity>
-            )}
-          </View>
-        </View>
+        <SearchBar searchtext={searchtext} setSearchText={setSearchText} />
       </LinearGradient>
 
       <ScrollView className="flex-1 pb-20">

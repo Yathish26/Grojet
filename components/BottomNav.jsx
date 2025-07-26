@@ -1,46 +1,50 @@
 import { Home, ShoppingCart, UserRound } from 'lucide-react-native';
 import React, { useRef, useState, useEffect } from 'react';
 import { TouchableOpacity, View, Text, Animated } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 
-export default function BottomNav({ currentRoute }) {
-  const navigation = useNavigation();
+export default function BottomNav({ state, descriptors, navigation }) {
   const indicatorAnim = useRef(new Animated.Value(0)).current;
   const [tabWidth, setTabWidth] = useState(0);
 
   const routes = [
-    { name: 'Home', icon: Home },
-    { name: 'Orders', icon: ShoppingCart },
-    { name: 'Profile', icon: UserRound }
+    { name: 'Homescreen', icon: Home, label: 'Home' },
+    { name: 'Orders', icon: ShoppingCart, label: 'Orders' },
+    { name: 'Profile', icon: UserRound, label: 'Profile' }
   ];
 
-  const getIndex = (name) => routes.findIndex(r => r.name === name);
-
   useEffect(() => {
-    const index = getIndex(currentRoute);
-    if (tabWidth > 0 && index >= 0) {
+    if (tabWidth > 0 && state.index >= 0) {
       Animated.spring(indicatorAnim, {
-        toValue: index * tabWidth,
+        toValue: state.index * tabWidth,
         useNativeDriver: true,
         stiffness: 120,
         damping: 14,
         mass: 0.5
       }).start();
     }
-  }, [currentRoute, tabWidth]);
+  }, [state.index, tabWidth]);
 
-  const handlePress = (routeName) => {
-    navigation.navigate(routeName);
+  // Use jumpTo for tab navigation (no history stack)
+  const handlePress = (routeName, index) => {
+    const event = navigation.emit({
+      type: 'tabPress',
+      target: state.routes[index].key,
+      canPreventDefault: true,
+    });
+
+    if (!event.defaultPrevented) {
+      navigation.navigate(state.routes[index].name);
+    }
   };
 
   const handleLayout = (event) => {
     const { width } = event.nativeEvent.layout;
-    setTabWidth(width / routes.length);
+    setTabWidth(width / state.routes.length);
   };
 
   return (
     <View
-      className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-100 shadow-lg flex-row pb-2 z-50"
+      className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-100 shadow-lg flex-row z-50"
       onLayout={handleLayout}
     >
       {/* Top Indicator */}
@@ -54,28 +58,31 @@ export default function BottomNav({ currentRoute }) {
         />
       )}
 
-      {routes.map((route) => {
-        const isActive = currentRoute === route.name;
-        const Icon = route.icon;
+      {state.routes.map((tabRoute, index) => {
+        const isActive = state.index === index;
+        const routeConfig = routes.find(r => r.name === tabRoute.name);
+        const Icon = routeConfig?.icon;
 
         return (
           <TouchableOpacity
-            key={route.name}
-            onPress={() => handlePress(route.name)}
+            key={tabRoute.key}
+            onPress={() => handlePress(tabRoute.name, index)}
             className="flex-1 items-center justify-center py-3"
             activeOpacity={0.8}
           >
             <View className="p-2 rounded-full">
-              <Icon
-                size={24}
-                color={isActive ? '#10B981' : '#9CA3AF'}
-                fill={isActive ? '#10B981' : 'transparent'}
-              />
+              {Icon && (
+                <Icon
+                  size={24}
+                  color={isActive ? '#10B981' : '#9CA3AF'}
+                  fill={isActive ? '#10B981' : 'transparent'}
+                />
+              )}
             </View>
             <Text
               className={`text-xs font-medium ${isActive ? 'text-green-600' : 'text-gray-400'}`}
             >
-              {route.name}
+              {routeConfig?.label || tabRoute.name}
             </Text>
           </TouchableOpacity>
         );

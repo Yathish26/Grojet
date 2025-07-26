@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import {
   ChevronRight,
@@ -30,39 +30,37 @@ export default function Profile() {
   const navigate = useNavigation();
   const isFocused = useIsFocused();
 
-  const loadProfileData = useCallback(async () => {
-    if (!user || !isLoggedIn) {
-      setIsLoading(true);
-    }
-
-    try {
-      const userJson = await AsyncStorage.getItem('user');
-      const storedToken = await SecureStore.getItemAsync('userToken');
-
-      if (userJson && storedToken) {
-        setUser(JSON.parse(userJson));
-        setIsLoggedIn(true);
-      } else {
-        setUser(null);
-        setIsLoggedIn(false);
-        if (userJson) await AsyncStorage.removeItem('user');
-        if (storedToken) await SecureStore.deleteItemAsync('userToken');
-      }
-    } catch (e) {
-      console.error('Failed to load profile data:', e);
-      setUser(null);
-      setIsLoggedIn(false);
-      Alert.alert('Error', 'Could not load profile data.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [user, isLoggedIn]);
-
+  // FIXED EFFECT
   useEffect(() => {
     if (isFocused) {
+      const loadProfileData = async () => {
+        setIsLoading(true);
+        try {
+          const userJson = await AsyncStorage.getItem('user');
+          const storedToken = await SecureStore.getItemAsync('userToken');
+
+          if (userJson && storedToken) {
+            setUser(JSON.parse(userJson));
+            setIsLoggedIn(true);
+          } else {
+            setUser(null);
+            setIsLoggedIn(false);
+            if (userJson) await AsyncStorage.removeItem('user');
+            if (storedToken) await SecureStore.deleteItemAsync('userToken');
+          }
+        } catch (e) {
+          console.error('Failed to load profile data:', e);
+          setUser(null);
+          setIsLoggedIn(false);
+          Alert.alert('Error', 'Could not load profile data.');
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
       loadProfileData();
     }
-  }, [isFocused, loadProfileData]);
+  }, [isFocused]);
 
   const handleLogout = () => {
     setShowLogoutAlert(true);
