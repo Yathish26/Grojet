@@ -2,16 +2,27 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  SafeAreaView,
   ScrollView,
   TouchableOpacity,
   Image,
   TextInput,
   StyleSheet,
   Animated,
-  Easing
+  Easing,
+  Platform
 } from 'react-native';
-import { Bell, X, ShoppingCart, Wheat, Search, PlusCircle, MinusCircle, Minus, Plus } from 'lucide-react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import {
+  Bell, X, ShoppingCart, Wheat, Search, PlusCircle, MinusCircle, Minus, Plus, ShoppingBag,
+  Home,
+  Heart,
+  Baby,
+  Shirt,
+  CloudDrizzle,
+  Pill,
+  Monitor,
+  Leaf,
+} from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svgdata from 'components/Svgdata';
 import CategoryTabs from 'components/CategoryTabs';
@@ -20,6 +31,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
 import SearchBar from 'components/SearchBar';
+import GradientBlock from 'components/Home/GradientBlock';
 
 
 // Product data
@@ -50,49 +62,94 @@ const categories = [
   {
     id: 'all',
     name: 'All',
-    Icon: <Svgdata icon="all" className="w-5 h-5" color="#4A5568" size={20} />,
+    Icon: <ShoppingBag className="w-5 h-5" color="#4A5568" size={20} />,
     isNew: false,
   },
   {
-    id: 'grains',
-    name: 'Grains',
-    Icon: <Wheat className="w-5 h-5" color="#4A5568" size={20} />,
+    id: 'fresh',
+    name: 'Fresh',
+    Icon: <Leaf className="w-5 h-5" color="#4A5568" size={20} />,
     isNew: false,
   },
   {
-    id: 'pulses',
-    name: 'Pulses',
-    Icon: <Svgdata icon="pulses" className="w-5 h-5" color="#4A5568" size={20} />,
+    id: 'medicines',
+    name: 'Medicines',
+    Icon: <Pill className="w-5 h-5" color="#4A5568" size={20} />,
     isNew: false,
   },
   {
-    id: 'spices',
-    name: 'Spices',
-    Icon: <Svgdata icon="spices" className="w-5 h-5" color="#4A5568" size={20} />,
+    id: 'electronics',
+    name: 'Electronics',
+    Icon: <Monitor className="w-5 h-5" color="#4A5568" size={20} />,
     isNew: false,
   },
   {
-    id: 'others',
-    name: 'Others',
-    Icon: <Svgdata icon="leaf" className="w-5 h-5" color="#4A5568" size={20} />,
+    id: 'home',
+    name: 'Home',
+    Icon: <Home className="w-5 h-5" color="#4A5568" size={20} />,
+    isNew: false,
+  },
+  {
+    id: 'beauty',
+    name: 'Beauty',
+    Icon: <Heart className="w-5 h-5" color="#4A5568" size={20} />,
+    isNew: false,
+  },
+  {
+    id: 'kids',
+    name: 'Kids',
+    Icon: <Baby className="w-5 h-5" color="#4A5568" size={20} />,
+    isNew: false,
+  },
+  {
+    id: 'grocery',
+    name: 'Grocery',
+    Icon: <ShoppingCart className="w-5 h-5" color="#4A5568" size={20} />,
+    isNew: false,
+  },
+  {
+    id: 'fashion',
+    name: 'Fashion',
+    Icon: <Shirt className="w-5 h-5" color="#4A5568" size={20} />,
+    isNew: false,
+  },
+  {
+    id: 'monsoon',
+    name: 'Monsoon',
+    Icon: <CloudDrizzle className="w-5 h-5" color="#4A5568" size={20} />,
     isNew: false,
   },
 ];
 
-const groceryKitchenItems = [
-  { id: 'veg', name: 'Vegetables & Fruits', image: 'https://i.pinimg.com/736x/ae/d9/11/aed9114ac106c26a1a67263e0635386c.jpg' },
-  { id: 'atta', name: 'Atta, Rice & Dal', image: 'https://i.pinimg.com/736x/79/c4/5a/79c45aacd5dfbd3ff53cc4fd5275dbcb.jpg' },
-  { id: 'oil_ghee_spices', name: 'Oil, Ghee & Spices', image: 'https://i.pinimg.com/736x/12/4f/ba/124fba10f7f343da6bd2a364992523fb.jpg' },
-  { id: 'dairy_bakery', name: 'Dairy & Bakery', image: 'https://i.pinimg.com/736x/77/fc/a9/77fca901813d38ef4b1bbe9234b1eaab.jpg' },
-  { id: 'snacks', name: 'Snacks & Beverages', image: 'https://i.pinimg.com/736x/90/d0/ea/90d0ea939da33dc9f0dba30656930615.jpg' },
-  { id: 'clean', name: 'Cleaning Essentials', image: 'https://i.pinimg.com/736x/bc/52/fa/bc52fabb16921d546cc380cc0561a530.jpg' },
-];
+const categoryColors = {
+  all: ['lightgreen','white'],
+  fresh: ['white', '#16a34a'],
+  medicines: ['pink', 'white'],
+  electronics: ['lightblue', 'white'],
+  home: ['#D6B24A', 'white'],
+  beauty: ['white', 'pink'],
+  kids: ['#FBFF66', 'white'],
+  grocery: ['white', 'lightgreen'],
+  fashion: ['white', 'pink'],
+  monsoon: ['white', 'lightblue'],
+};
 
 export default function HomeScreen({ navigation }) {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchtext, setSearchText] = useState('');
   const [cartItems, setCartItems] = useState([]);
   const [bounceValue] = useState(new Animated.Value(1));
+  const [groceryKitchenItems, setGroceryKitchenItems] = useState([]);
+  const insets = useSafeAreaInsets();
+
+  useEffect(() => {
+    const fetchGroceryKitchenItems = async () => {
+      const response = await fetch('http://192.168.1.35:5000/home/trending');
+      const data = await response.json();
+      setGroceryKitchenItems(data);
+    };
+    fetchGroceryKitchenItems();
+  }, []);
 
   const filteredProducts = selectedCategory === 'all'
     ? allProducts
@@ -195,67 +252,27 @@ export default function HomeScreen({ navigation }) {
   // setCartItems([]);
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }} edges={['left', 'right', 'bottom']}>
       {/* Top Bar */}
-      <LinearGradient
-        colors={['#ffffff', '#32a852']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={{
-          paddingHorizontal: 16, // px-4 = 16
-          paddingBottom: 12,     // pb-3 = 12 (pb-3 is usually 12px in Tailwind)
-          borderBottomWidth: 1,  // border-b
-          borderBottomColor: '#f3f4f6', // border-gray-100
-        }}
+      <GradientBlock
+        navigation={navigation}
+        location="Mangalore"
+        onBellPress={() => navigation.navigate('OffersInfo')}
+        selectedCategory={selectedCategory}
+        categoryColors={categoryColors}
+      />
+
+      <ScrollView 
+        className="flex-1" 
+        contentContainerStyle={{ paddingBottom: 100 }}
+        showsVerticalScrollIndicator={false}
       >
-        <View className="flex-row justify-between items-center mt-3">
-          <Image
-            source={require('../assets/grojetpng.png')}
-            className="w-32 h-16"
-            resizeMode="contain"
-          />
-          <TouchableOpacity onPress={() => navigation.navigate('OffersInfo')} className="bg-white/30 p-2 rounded-full">
-            <Bell size={24} color="#4a4a4a" />
-          </TouchableOpacity>
-        </View>
-
-        <TouchableOpacity className="flex-row items-center mt-2">
-          <View className="flex-row items-center gap-1">
-            <Svg
-              xmlns="http://www.w3.org/2000/svg"
-              width={18}
-              height={18}
-              viewBox="0 0 24 24"
-              fill="none"
-              role="img"
-              color="#4a4a4a"
-            >
-              <Path
-                d="M15.5 11C15.5 12.933 13.933 14.5 12 14.5C10.067 14.5 8.5 12.933 8.5 11C8.5 9.067 10.067 7.5 12 7.5C13.933 7.5 15.5 9.067 15.5 11Z"
-                stroke="#4a4a4a"
-                strokeWidth={1.5}
-              />
-              <Path
-                d="M21 11C21 18 12 22 12 22C12 22 3 18 3 11C3 6.02944 7.02944 2 12 2C16.9706 2 21 6.02944 21 11Z"
-                stroke="#4a4a4a"
-                strokeWidth={1.5}
-                strokeLinejoin="round"
-              />
-            </Svg>
-            <Text className="text-md text-gray-800 font-semibold">Mangalore</Text>
-          </View>
-        </TouchableOpacity>
-
-        {/* Search Bar */}
-        <SearchBar searchtext={searchtext} setSearchText={setSearchText} />
-      </LinearGradient>
-
-      <ScrollView className="flex-1 pb-20">
         {/* Horizontal Category Scroll */}
         <CategoryTabs
           categories={categories}
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
+          categoryColors={categoryColors}
         />
 
         {/* Products Grid */}
@@ -338,11 +355,11 @@ export default function HomeScreen({ navigation }) {
 
         {/* Grocery & Kitchen Section */}
         <View className="p-4 bg-white mt-2 mb-4 rounded-lg">
-          <Text className="text-xl font-bold text-gray-800 mb-4">Grocery & Kitchen</Text>
+          <Text className="text-xl font-bold text-gray-800 mb-4">Trending</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} className="pb-2">
-            {groceryKitchenItems.map((item) => (
+            {groceryKitchenItems.map((item, index) => (
               <TouchableOpacity
-                key={item.id}
+                key={index}
                 className="w-32 items-center mr-4 bg-gray-50 p-3 rounded-lg border border-gray-100"
               >
                 <Image
@@ -361,8 +378,15 @@ export default function HomeScreen({ navigation }) {
       {/* Floating Cart Button */}
       {totalItems > 0 && (
         <Animated.View
-          style={[styles.cartButton, { transform: [{ scale: bounceValue }] }]}
-          className="absolute bottom-24 right-5 bg-green-600 rounded-xl p-4 shadow-lg"
+          style={[
+            styles.cartButton, 
+            { 
+              transform: [{ scale: bounceValue }],
+              bottom: Platform.OS === 'ios' ? insets.bottom + 80 : 96,
+              right: 20
+            }
+          ]}
+          className="absolute bg-green-600 rounded-xl p-4 shadow-lg"
         >
           <TouchableOpacity
             onPress={() => navigation.navigate('Cart', { cartItems })}

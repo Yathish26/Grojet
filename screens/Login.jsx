@@ -6,37 +6,30 @@ import {
     TouchableOpacity,
     ScrollView,
     KeyboardAvoidingView,
-    Platform,
     Image,
     Alert,
+    Platform,
 } from 'react-native';
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react-native';
-import Svgdata from 'components/Svgdata';
-
-import * as SecureStore from 'expo-secure-store';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { useUser } from '../context/UserContext';
 
 const Login = () => {
     const [formData, setFormData] = useState({
-        email: '',
-        password: '',
+        phone: '',
     });
 
     const [errors, setErrors] = useState({});
-    const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     const navigation = useNavigation();
+    const { login } = useUser();
 
     const validateForm = () => {
         const newErrors = {};
-        if (!formData.email.trim()) newErrors.email = 'Email is required';
-        else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(formData.email)) {
-            newErrors.email = 'Invalid email address';
+        if (!formData.phone.trim()) newErrors.phone = 'Phone number is required';
+        else if (!/^\d{10}$/.test(formData.phone)) {
+            newErrors.phone = 'Enter a valid 10-digit phone number';
         }
-        if (!formData.password) newErrors.password = 'Password is required';
-
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -46,12 +39,12 @@ const Login = () => {
 
         setIsLoading(true);
         try {
-            const response = await fetch('http://192.168.1.35:5000/api/auth/login', {
+            const response = await fetch('http://192.168.1.35:5000/auth/phone-login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({ phone: formData.phone }),
             });
 
             const data = await response.json();
@@ -61,17 +54,23 @@ const Login = () => {
                 return;
             }
 
-            await Promise.all([
-                SecureStore.setItemAsync('userToken', data.token),
-                AsyncStorage.setItem('user', JSON.stringify(data.user))
-            ]);
+            const success = await login(data.user, data.token);
 
-
-            // Navigate to home
-            navigation.reset({
-                index: 0,
-                routes: [{ name: 'Home' }],
-            });
+            if (success) {
+                navigation.reset({
+                    index: 0,
+                    routes: [
+                        {
+                            name: 'MainTabs',
+                            state: {
+                                routes: [{ name: 'Homescreen' }],
+                            },
+                        },
+                    ],
+                });
+            } else {
+                Alert.alert('Error', 'Failed to save login data. Please try again.');
+            }
         } catch (error) {
             console.error('Login error:', error);
             Alert.alert('Error', 'Something went wrong. Please try again.');
@@ -90,9 +89,9 @@ const Login = () => {
             behavior='padding'
             className="flex-1 bg-white"
         >
-            <View className="bg-[#bbf2c6] h-60 w-full rounded-b-3xl absolute top-0 items-center justify-center px-6">
+            <View className="bg-[#bbf2c6] h-64 w-full rounded-b-3xl absolute top-0 items-center justify-center px-6">
                 <Image
-                    source={require('../assets/grojetpng.png')}
+                    source={require('../assets/grojetF.png')}
                     className="w-48 h-16"
                     resizeMode="contain"
                     style={{ alignSelf: 'center' }}
@@ -105,85 +104,73 @@ const Login = () => {
                 contentContainerStyle={{ paddingTop: 200 }}
             >
                 <View className="bg-white mx-6 p-6 rounded-2xl shadow-xl z-10">
-                    <Text className="text-2xl font-bold text-gray-900 mb-2 text-center">Login</Text>
-                    <Text className="text-gray-500 text-base mb-8 text-center">Enter your details below</Text>
+                    <Text className="text-2xl font-bold text-gray-900 mb-2 text-center">Login / Signup</Text>
+                    <Text className="text-gray-500 text-base mb-8 text-center">Enter your phone number below</Text>
 
-                    {/* Email Field */}
+                    {/* Phone Number Field */}
                     <View className="mb-5">
-                        <Text className="text-sm font-medium text-gray-600 mb-1">Email Address</Text>
-                        <View className={`flex-row items-center bg-gray-50 rounded-xl border ${errors.email ? 'border-red-400' : 'border-gray-200'} p-4`}>
-                            <Mail size={18} color="#6B7280" className="mr-3" />
+                        <View
+                            className={`flex-row items-center bg-gray-50 rounded-xl border ${errors.phone ? 'border-red-400' : 'border-gray-200'} p-4`}
+                            style={{ height: 52 }}
+                        >
+                            <View className="flex-row items-center justify-center mr-3">
+                                <Text className="text-gray-800 font-bold text-base">+91</Text>
+                            </View>
                             <TextInput
-                                placeholder="Email"
-                                value={formData.email}
-                                onChangeText={text => handleChange('email', text)}
-                                keyboardType="email-address"
+                                placeholder="Enter mobile number"
+                                value={formData.phone}
+                                onChangeText={text => handleChange('phone', text.replace(/[^0-9]/g, ''))}
+                                keyboardType="number-pad"
                                 autoCapitalize="none"
-                                className="flex-1 text-gray-800 font-medium"
+                                className='flex-1 text-gray-800 font-medium py-0'
                                 placeholderTextColor="#9CA3AF"
+                                maxLength={10}
+                                style={{
+                                    height: '100%',
+                                    includeFontPadding: false
+                                }}
                             />
                         </View>
-                        {errors.email && <Text className="text-red-500 text-xs mt-1 ml-1">{errors.email}</Text>}
+                        {errors.phone && (
+                            <Text className="text-red-500 text-xs mt-1.5 ml-1.5">
+                                {errors.phone}
+                            </Text>
+                        )}
                     </View>
-
-                    {/* Password Field */}
-                    <View className="mb-4">
-                        <Text className="text-sm font-medium text-gray-600 mb-1">Password</Text>
-                        <View className={`flex-row items-center bg-gray-50 rounded-xl border ${errors.password ? 'border-red-400' : 'border-gray-200'} p-4`}>
-                            <Lock size={18} color="#6B7280" className="mr-3" />
-                            <TextInput
-                                placeholder="Password"
-                                value={formData.password}
-                                onChangeText={text => handleChange('password', text)}
-                                secureTextEntry={!showPassword}
-                                className="flex-1 text-gray-800 font-medium"
-                                placeholderTextColor="#9CA3AF"
-                            />
-                            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                                {showPassword ? (
-                                    <EyeOff size={18} color="#6B7280" />
-                                ) : (
-                                    <Eye size={18} color="#6B7280" />
-                                )}
-                            </TouchableOpacity>
-                        </View>
-                        {errors.password && <Text className="text-red-500 text-xs mt-1 ml-1">{errors.password}</Text>}
-                    </View>
-
-                    <TouchableOpacity className="items-center mb-6" onPress={() => navigation.navigate('ForgotPassword')}>
-                        <Text className="text-gray-500 font-medium text-sm">Forgot your password?</Text>
-                    </TouchableOpacity>
-
                     <TouchableOpacity
                         onPress={handleSubmit}
-                        className="bg-green-500 py-4 rounded-xl items-center justify-center shadow-md mb-6"
+                        className="bg-green-500 py-4 rounded-xl items-center justify-center shadow-md"
                         activeOpacity={0.9}
                         disabled={isLoading}
                     >
                         <Text className="text-white font-bold text-lg">
-                            {isLoading ? 'Signing in...' : 'Log In'}
+                            {isLoading ? 'Continuing...' : 'Continue'}
                         </Text>
                     </TouchableOpacity>
 
-                    <View className="mb-6">
-                        <View className="flex-row items-center mb-4">
-                            <View className="flex-1 h-px bg-gray-300" />
-                            <Text className="text-gray-500 px-3 text-sm">Or sign in with</Text>
-                            <View className="flex-1 h-px bg-gray-300" />
-                        </View>
-
-                        <View className="flex-row justify-center">
-                            <TouchableOpacity className="bg-white flex-1 p-3 rounded-xl border border-gray-200 flex-row items-center justify-center">
-                                {/* Assuming Svgdata.icon="googlelogin" works for Expo */}
-                                <Svgdata icon="googlelogin" size={24} />
-                                <Text className="ml-2 text-gray-700 font-medium">Google</Text>
-                            </TouchableOpacity>
-                        </View>
+                    <View className="mt-6 items-center">
+                        <Text className="text-xs text-gray-500 text-center">
+                            By clicking Continue, I accept the{' '}
+                            <Text
+                                className="text-green-600 underline"
+                                onPress={() => navigation.navigate('TermsofService')}
+                            >
+                                Terms of Service
+                            </Text>
+                            {' '} & {' '}
+                            <Text
+                                className="text-green-600 underline"
+                                onPress={() => navigation.navigate('PrivacyPolicy')}
+                            >
+                                Privacy Policy
+                            </Text>
+                            .
+                        </Text>
                     </View>
 
-                    <TouchableOpacity className="items-center mb-6" onPress={() => navigation.navigate('Register')}>
-                        <Text className="text-gray-500 font-medium text-sm">Don't have an account? Register</Text>
-                    </TouchableOpacity>
+                    <View className="mt-8 items-center">
+                        <Text className="text-xs text-gray-400">Grojet A Daffodils Enterprise</Text>
+                    </View>
                 </View>
             </ScrollView>
         </KeyboardAvoidingView>

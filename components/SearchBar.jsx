@@ -2,7 +2,7 @@ import React from 'react';
 import { View, TextInput, TouchableOpacity, Platform, StyleSheet } from 'react-native';
 import { Search, X } from 'lucide-react-native'; // or your icon library
 
-const SearchBar = ({ searchtext, setSearchText }) => (
+const SearchBar = ({ searchtext, setSearchText, placeholder = 'Search' }) => (
   <View style={styles.container}>
     <View style={styles.inputWrapper}>
       <Search size={20} color="#666" />
@@ -10,7 +10,7 @@ const SearchBar = ({ searchtext, setSearchText }) => (
         style={styles.input}
         value={searchtext}
         onChangeText={setSearchText}
-        placeholder="Search Fresh Fruits"
+        placeholder={placeholder}
         placeholderTextColor="#999"
         underlineColorAndroid="transparent"
         autoCorrect={false}
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     color: '#222',
     fontSize: 16,
     paddingLeft: 12,
-    paddingVertical: Platform.OS === 'ios' ? 8 : 0,
+    paddingVertical: Platform.OS === 'ios' ? 4 : 0,
     // Removes extra line-height on iOS
     height: Platform.OS === 'ios' ? 28 : 40,
   },

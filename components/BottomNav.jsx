@@ -1,6 +1,8 @@
-import { Home, ShoppingCart, UserRound } from 'lucide-react-native';
+import { Home, ShoppingCart, UserRound, Blocks } from 'lucide-react-native';
 import React, { useRef, useState, useEffect } from 'react';
 import { TouchableOpacity, View, Text, Animated } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import * as Haptics from 'expo-haptics';
 
 export default function BottomNav({ state, descriptors, navigation }) {
   const indicatorAnim = useRef(new Animated.Value(0)).current;
@@ -8,6 +10,7 @@ export default function BottomNav({ state, descriptors, navigation }) {
 
   const routes = [
     { name: 'Homescreen', icon: Home, label: 'Home' },
+    { name: 'Categories', icon: Blocks, label: 'Categories' },
     { name: 'Orders', icon: ShoppingCart, label: 'Orders' },
     { name: 'Profile', icon: UserRound, label: 'Profile' }
   ];
@@ -26,6 +29,7 @@ export default function BottomNav({ state, descriptors, navigation }) {
 
   // Use jumpTo for tab navigation (no history stack)
   const handlePress = (routeName, index) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     const event = navigation.emit({
       type: 'tabPress',
       target: state.routes[index].key,
@@ -43,10 +47,15 @@ export default function BottomNav({ state, descriptors, navigation }) {
   };
 
   return (
-    <View
-      className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-100 shadow-lg flex-row z-50"
-      onLayout={handleLayout}
+    <SafeAreaView 
+      edges={['bottom']}
+      style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}
+      className="bg-white border-t border-gray-100 shadow-lg z-50"
     >
+      <View
+        className="flex-row"
+        onLayout={handleLayout}
+      >
       {/* Top Indicator */}
       {tabWidth > 0 && (
         <Animated.View
@@ -70,10 +79,10 @@ export default function BottomNav({ state, descriptors, navigation }) {
             className="flex-1 items-center justify-center py-3"
             activeOpacity={0.8}
           >
-            <View className="p-2 rounded-full">
+            <View>
               {Icon && (
                 <Icon
-                  size={24}
+                  size={20}
                   color={isActive ? '#10B981' : '#9CA3AF'}
                   fill={isActive ? '#10B981' : 'transparent'}
                 />
@@ -87,6 +96,7 @@ export default function BottomNav({ state, descriptors, navigation }) {
           </TouchableOpacity>
         );
       })}
-    </View>
+      </View>
+    </SafeAreaView>
   );
 }

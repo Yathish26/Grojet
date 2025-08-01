@@ -45,7 +45,7 @@ const Support = () => {
       <BackHeader title="Support" />
 
       <ScrollView className="flex-1 p-4" contentContainerStyle={{ paddingTop: 20 }}>
-        <View className="bg-white mx-2 p-5 rounded-xl shadow-sm border border-gray-100 mb-6">
+        <View className="bg-white mx-2 p-5 rounded-xl border border-gray-200 mb-6">
           <Text className="text-xs uppercase text-gray-500 font-bold mb-4 tracking-wide">Helpline</Text>
           <TouchableOpacity
             onPress={handleCallHelpline}
@@ -69,7 +69,7 @@ const Support = () => {
           </TouchableOpacity>
         </View>
 
-        <View className="bg-white mx-2 p-5 rounded-xl shadow-sm border border-gray-100 mb-6">
+        <View className="bg-white mx-2 p-5 rounded-xl border border-gray-200 mb-6">
           <Text className="text-xs uppercase text-gray-500 font-bold mb-4 tracking-wide">Live Assistance</Text>
           <TouchableOpacity
             onPress={handleLiveChat}

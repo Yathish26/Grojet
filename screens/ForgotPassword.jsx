@@ -79,7 +79,7 @@ const ForgotPassword = () => {
                         >
                             <Mail size={18} color="#6B7280" style={{ marginRight: 12 }} />
                             <TextInput
-                                placeholder="example@email.com"
+                                placeholder="Email"
                                 value={email}
                                 onChangeText={handleChangeEmail}
                                 keyboardType="email-address"
