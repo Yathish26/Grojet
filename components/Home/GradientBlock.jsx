@@ -9,16 +9,16 @@ import AppText from 'components/AppText';
 
 const DEFAULT_GRADIENT = ['#ffffff', '#b9fbc0']; // white to light green
 
-const GradientBlock = ({ 
-    navigation, 
-    location = 'Mangalore', 
+const GradientBlock = ({
+    navigation,
+    location = 'Mangalore',
     onBellPress,
     selectedCategory = 'all',
     categoryColors = {} // Ensure default as empty object
 }) => {
     const [searchtext, setSearchText] = useState('');
     const insets = useSafeAreaInsets();
-    
+
     const gradientColors = (
         Array.isArray(categoryColors[selectedCategory]) && categoryColors[selectedCategory].length > 0
             ? categoryColors[selectedCategory]
@@ -39,12 +39,12 @@ const GradientBlock = ({
             }}
         >
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
-                <Image
-                    source={require('../../assets/grojetF.png')} // adjust path as needed
-                    alt="Grojet Logo"
-                    style={{ width: 90, height: 64 }}
-                    resizeMode="contain"
-                />
+                    <Image
+                        source={require('../../assets/gb.png')}
+                        alt="Grojet Logo"
+                        style={{ width: 90, height: 64, borderRadius: 16 }}
+                        resizeMode="contain"
+                    />
                 <TouchableOpacity
                     onPress={onBellPress ? onBellPress : () => navigation?.navigate('OffersInfo')}
                     style={{
@@ -72,7 +72,12 @@ const GradientBlock = ({
             </TouchableOpacity>
 
             {/* Search Bar */}
-            <SearchBar searchtext={searchtext} setSearchText={setSearchText} placeholder="Search for Fresh Fruits" />
+            <SearchBar 
+                searchtext={searchtext} 
+                setSearchText={setSearchText} 
+                placeholder="Search for Fresh Fruits" 
+                navigation={navigation}
+            />
         </LinearGradient>
     );
 };

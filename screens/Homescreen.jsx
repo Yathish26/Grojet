@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
   ScrollView,
   TouchableOpacity,
   Image,
-  TextInput,
   StyleSheet,
   Animated,
   Easing,
-  Platform
+  Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
-  Bell, X, ShoppingCart, Wheat, Search, PlusCircle, MinusCircle, Minus, Plus, ShoppingBag,
+  ShoppingCart, Minus, Plus, ShoppingBag,
   Home,
   Heart,
   Baby,
@@ -23,144 +23,172 @@ import {
   Monitor,
   Leaf,
 } from 'lucide-react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import Svgdata from 'components/Svgdata';
-import CategoryTabs from 'components/CategoryTabs';
-import Svg, { Path } from 'react-native-svg';
+import CategoryTabs from 'components/Home/CategoryTabs';
+import GradientBlock from 'components/Home/GradientBlock';
+import HotDeals from 'components/Home/HotDeals';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
-import { useCallback } from 'react';
-import SearchBar from 'components/SearchBar';
-import GradientBlock from 'components/Home/GradientBlock';
-
-
-// Product data
-const allProducts = [
-  { id: '1', name: 'Wheat', price: '27.50', category: 'grains', image: 'https://i.pinimg.com/736x/59/2e/58/592e58975c0849dd99d971daa89dcccc.jpg' },
-  { id: '2', name: 'Maize Hyb.', price: '27.50', category: 'grains', image: 'https://i.pinimg.com/736x/67/cb/9f/67cb9f8f23d481e8087efddea69079c2.jpg' },
-  { id: '3', name: 'Maize Desi', price: '30.50', category: 'grains', image: 'https://i.pinimg.com/736x/ed/8d/0f/ed8d0f872e5209d0d72996576ad3a6e7.jpg' },
-  { id: '4', name: 'Bajra', price: '26.50', category: 'grains', image: 'https://i.pinimg.com/736x/4b/f0/4c/4bf04c342db0e63de082fce7f21902c2.jpg' },
-  { id: '5', name: 'Jawar 15 No.', price: '30', category: 'grains', image: 'https://2.wlimg.com/product_images/bc-full/2023/9/12468400/jawar-seeds-1694515828-7076823.jpeg' },
-  { id: '6', name: 'Jawar Desi', price: '48', category: 'grains', image: 'https://images.meesho.com/images/products/221215956/zhro7_512.webp' },
-  { id: '7', name: 'Jeera Singapore', price: '235', category: 'spices', image: 'https://images.jdmagicbox.com/quickquotes/images_main/cumin-seeds-europe-99-2023118370-vfinzxzn.jpg' },
-  { id: '8', name: 'Jeera Bold', price: '260', category: 'spices', image: 'https://lsmedia.linker-cdn.net/1013953/2024/13933635.jpeg' },
-  { id: '9', name: 'Jeera Extra Bold', price: '290', category: 'spices', image: 'https://www.jiomart.com/images/product/original/rvkbrioajm/marwar-jeera-whole-cumin-seeds-400g-machine-clean-jira-big-bold-size-400g-product-images-orvkbrioajm-p593794064-3-202504011521.jpg?im=Resize=(420,420)' },
-  { id: '10', name: 'Sounf Naturel', price: '160', category: 'spices', image: 'https://rukminim2.flixcart.com/image/850/1000/l29c9e80/edible-seed/9/g/v/200-organic-fennel-seed-indian-spices-saunf-whole-natural-sounf-original-imagdn88gzgtkmnw.jpeg?q=90&crop=false' },
-  { id: '11', name: 'Methi', price: '53', category: 'spices', image: 'https://organicmandya.com/cdn/shop/files/MethiSeed_2_2922b02a-1f60-415f-9bb9-a79762798e23.jpg?v=1738227102&width=1000' },
-  { id: '12', name: 'Chana Sortex', price: '60', category: 'pulses', image: 'https://5.imimg.com/data5/SELLER/Default/2022/10/GD/NC/CC/159872724/sortex-clean-chana-500x500.jpg' },
-  { id: '13', name: 'Chana Dal Sortex', price: '67', category: 'pulses', image: 'https://assets.hyperpure.com/data/images/products/032e592dacccf35c4f67e40c49e099bb.png' },
-  { id: '14', name: 'Moong Sortex', price: '90', category: 'pulses', image: 'https://5.imimg.com/data5/VQ/UN/MY-16408377/green-moong-dal.jpg' },
-  { id: '15', name: 'Moong Dal', price: '110', category: 'pulses', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREIiN_eX4iwSs4GzR7CQqTQ5Uuy-wsi_256Q&s' },
-  { id: '16', name: 'Moong Mogar', price: '130', category: 'pulses', image: 'https://indorinamkeen.com/cdn/shop/files/35.jpg?v=1717236483' },
-  { id: '17', name: 'Urad Sortex', price: '90', category: 'pulses', image: 'https://5.imimg.com/data5/SELLER/Default/2025/4/503742631/VE/FQ/MK/12034606/urad-seeds.jpg' },
-  { id: '18', name: 'Urad Daal', price: '110', category: 'pulses', image: 'https://5.imimg.com/data5/SELLER/Default/2024/3/399844152/YJ/YH/GW/11560512/white-polished-whole-sabut-urad-dal-500x500.jpg' },
-  { id: '19', name: 'Urad Mogar', price: '130', category: 'pulses', image: 'https://5.imimg.com/data5/CK/QB/MY-2685722/urad-mogar-dal.jpg' },
-  { id: '20', name: 'Coconut', price: '80', category: 'others', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjc0g3CgUrhjLEJe6gPGi3T6HkTBhFCXzcfg&s' },
-];
+import * as Haptics from 'expo-haptics';
 
 const categories = [
   {
     id: 'all',
     name: 'All',
-    Icon: <ShoppingBag className="w-5 h-5" color="#4A5568" size={20} />,
+    IconComponent: ShoppingBag,
     isNew: false,
   },
   {
     id: 'fresh',
     name: 'Fresh',
-    Icon: <Leaf className="w-5 h-5" color="#4A5568" size={20} />,
+    IconComponent: Leaf,
     isNew: false,
   },
   {
     id: 'medicines',
     name: 'Medicines',
-    Icon: <Pill className="w-5 h-5" color="#4A5568" size={20} />,
+    IconComponent: Pill,
     isNew: false,
   },
   {
     id: 'electronics',
     name: 'Electronics',
-    Icon: <Monitor className="w-5 h-5" color="#4A5568" size={20} />,
+    IconComponent: Monitor,
     isNew: false,
   },
   {
     id: 'home',
     name: 'Home',
-    Icon: <Home className="w-5 h-5" color="#4A5568" size={20} />,
+    IconComponent: Home,
     isNew: false,
   },
   {
     id: 'beauty',
     name: 'Beauty',
-    Icon: <Heart className="w-5 h-5" color="#4A5568" size={20} />,
+    IconComponent: Heart,
     isNew: false,
   },
   {
     id: 'kids',
     name: 'Kids',
-    Icon: <Baby className="w-5 h-5" color="#4A5568" size={20} />,
+    IconComponent: Baby,
     isNew: false,
   },
   {
     id: 'grocery',
     name: 'Grocery',
-    Icon: <ShoppingCart className="w-5 h-5" color="#4A5568" size={20} />,
+    IconComponent: ShoppingCart,
     isNew: false,
   },
   {
     id: 'fashion',
     name: 'Fashion',
-    Icon: <Shirt className="w-5 h-5" color="#4A5568" size={20} />,
+    IconComponent: Shirt,
     isNew: false,
   },
   {
     id: 'monsoon',
     name: 'Monsoon',
-    Icon: <CloudDrizzle className="w-5 h-5" color="#4A5568" size={20} />,
+    IconComponent: CloudDrizzle,
     isNew: false,
   },
 ];
 
 const categoryColors = {
-  all: ['lightgreen','white'],
-  fresh: ['white', '#16a34a'],
-  medicines: ['pink', 'white'],
-  electronics: ['lightblue', 'white'],
-  home: ['#D6B24A', 'white'],
-  beauty: ['white', 'pink'],
-  kids: ['#FBFF66', 'white'],
-  grocery: ['white', 'lightgreen'],
-  fashion: ['white', 'pink'],
-  monsoon: ['white', 'lightblue'],
+  all: ['#22C55E', '#ffffff'],
+  fresh: ['#22C55E', '#ffffff'],
+  medicines: ['#F59E0B', '#ffffff'],
+  electronics: ['#3B82F6', '#ffffff'],
+  home: ['#8B5CF6', '#ffffff'],
+  beauty: ['#EC4899', '#ffffff'],
+  kids: ['#F59E0B', '#ffffff'],
+  grocery: ['#10B981', '#ffffff'],
+  fashion: ['#EC4899', '#ffffff'],
+  monsoon: ['#06B6D4', '#ffffff'],
 };
+
+const categoryTheme = {
+  all: '#22C55E',
+  fresh: '#22C55E',
+  medicines: '#F59E0B',
+  electronics: '#3B82F6',
+  home: '#8B5CF6',
+  beauty: '#EC4899',
+  kids: '#F59E0B',
+  grocery: '#10B981',
+  fashion: '#EC4899',
+  monsoon: '#06B6D4',
+}
+
+const categoryTint = {
+  all: '#f6fff4',
+  fresh: '#e4faf1',
+  medicines: '#fdebe4',
+  electronics: '#e6f7fa',
+  home: '#f3f0f8',
+  beauty: '#fdeff3',
+  kids: '#fdebe4',
+  grocery: '#e1fcf3',
+  fashion: '#fdeff3',
+  monsoon: '#e6f6fb',
+};
+
+const API_BASE_URL = "http://192.168.1.38:5000";
 
 export default function HomeScreen({ navigation }) {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchtext, setSearchText] = useState('');
   const [cartItems, setCartItems] = useState([]);
   const [bounceValue] = useState(new Animated.Value(1));
-  const [groceryKitchenItems, setGroceryKitchenItems] = useState([]);
+  const [filteredHotDeals, setFilteredHotDeals] = useState([]);
+  const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [newArrivals, setNewArrivals] = useState([]);
+  const [offers, setOffers] = useState([]);
+  const [trendingProducts, setTrendingProducts] = useState([]);
+  const [categoriesList, setCategoriesList] = useState([]);
+  const [loading, setLoading] = useState(true);
   const insets = useSafeAreaInsets();
 
+  const currentBgColor = (categoryTint[selectedCategory] || '#f6fff4');
+
+  // Fetch data from backend
   useEffect(() => {
-    const fetchGroceryKitchenItems = async () => {
-      const response = await fetch('http://192.168.1.35:5000/home/trending');
-      const data = await response.json();
-      setGroceryKitchenItems(data);
-    };
-    fetchGroceryKitchenItems();
+    setLoading(true);
+    Promise.all([
+      fetch(`${API_BASE_URL}/home/featured?limit=4`).then(r => r.json()),
+      fetch(`${API_BASE_URL}/home/hotdeals?minDiscount=10`).then(r => r.json()),
+      fetch(`${API_BASE_URL}/home/new?limit=10`).then(r => r.json()),
+      fetch(`${API_BASE_URL}/home/offers?minDiscount=10`).then(r => r.json()),
+      fetch(`${API_BASE_URL}/home/trending?limit=6`).then(r => r.json()),
+      fetch(`${API_BASE_URL}/home/categories/list?from=3&to=10`).then(r => r.json())
+    ]).then(([featured, newp, offer, trending, quickpicks, categories]) => {
+      setFilteredHotDeals(offer.filter(p => p.pricing?.discountPercent >= 10));
+      setFeaturedProducts(featured);
+      setNewArrivals(newp);
+      setOffers(offer);
+      setTrendingProducts(trending);
+      setCategoriesList(categories);
+      setLoading(false);
+    }).catch(err => {
+      setLoading(false);
+      // Optionally set some error state here
+    });
   }, []);
 
-  const filteredProducts = selectedCategory === 'all'
-    ? allProducts
-    : allProducts.filter(product => product.category === selectedCategory);
+  // Filter featured products by category if not "all"
+  const filteredFeatured = selectedCategory === 'all'
+    ? featuredProducts
+    : featuredProducts.filter(product =>
+      (product.category_string || "").toLowerCase().includes(selectedCategory)
+    );
 
+  // Cart management and animation
   const addToCart = (product) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setCartItems(prevItems => {
-      const existingItem = prevItems.find(item => item.id === product.id);
+      const existingItem = prevItems.find(item => item._id === product._id);
       if (existingItem) {
         return prevItems.map(item =>
-          item.id === product.id
+          item._id === product._id
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
@@ -186,16 +214,17 @@ export default function HomeScreen({ navigation }) {
   };
 
   const removeFromCart = (productId) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setCartItems(prevItems => {
-      const existingItem = prevItems.find(item => item.id === productId);
-      if (existingItem.quantity > 1) {
+      const existingItem = prevItems.find(item => item._id === productId);
+      if (existingItem && existingItem.quantity > 1) {
         return prevItems.map(item =>
-          item.id === productId
+          item._id === productId
             ? { ...item, quantity: item.quantity - 1 }
             : item
         );
       } else {
-        return prevItems.filter(item => item.id !== productId);
+        return prevItems.filter(item => item._id !== productId);
       }
     });
     Animated.sequence([
@@ -230,11 +259,9 @@ export default function HomeScreen({ navigation }) {
           console.log('Error loading cart on focus', error);
         }
       };
-
       loadCart();
     }, [])
   );
-
 
   useEffect(() => {
     const saveCart = async () => {
@@ -244,15 +271,138 @@ export default function HomeScreen({ navigation }) {
         console.log('Failed to save cart to storage', error);
       }
     };
-
     saveCart();
   }, [cartItems]);
 
-  // await AsyncStorage.removeItem('cart');
-  // setCartItems([]);
+  // UI render helpers
+  const renderProductCard = (product, idx) => {
+    const cartItem = cartItems.find(item => item._id === product._id);
+    const quantity = cartItem ? cartItem.quantity : 0;
+    const isLastCol = (idx + 1) % 2 === 0;
+
+    return (
+      <View
+        key={product._id}
+        className={`bg-white rounded-2xl p-3 mb-4 w-[48%] ${!isLastCol ? "mr-[4%]" : ""}`}
+        style={{
+          shadowColor: '#000',
+          shadowOpacity: 0.05,
+          shadowRadius: 8,
+          shadowOffset: { width: 0, height: 4 },
+        }}
+      >
+        <View className="items-center mb-3 bg-gray-50 rounded-xl">
+          <Image
+            source={{ uri: product.thumbnail }}
+            className="w-full h-28 rounded-xl"
+            resizeMode="contain"
+          />
+        </View>
+        <Text className="text-base font-semibold text-gray-900 mb-0.5" numberOfLines={2}>
+          {product.name}
+        </Text>
+        <View className="flex-row items-center mb-1.5">
+          <Text className="text-sm text-green-700 font-semibold mr-2">
+            ₹{product.pricing?.sellingPrice}
+          </Text>
+          {product.pricing?.mrp > product.pricing?.sellingPrice && (
+            <Text className="text-xs text-gray-400 line-through mr-2">
+              ₹{product.pricing?.mrp}
+            </Text>
+          )}
+          {product.pricing?.offerTag && (
+            <Text className="text-xs text-red-500 font-semibold">
+              {product.pricing.offerTag}
+            </Text>
+          )}
+        </View>
+        {/* Cart Actions */}
+        {quantity > 0 ? (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              paddingHorizontal: 4,
+              paddingVertical: 4,
+              borderRadius: 999,
+              backgroundColor: '#fff',
+              borderWidth: 1,
+              borderColor: '#68D391', // green-200
+              marginTop: 8,
+            }}
+          >
+            {/* Minus button */}
+            <TouchableOpacity
+              onPress={() => removeFromCart(product._id)}
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 16,
+                backgroundColor: 'green', // green-400
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              activeOpacity={0.9}
+            >
+              <Minus size={18} color="#fff" />
+            </TouchableOpacity>
+
+            {/* Quantity */}
+            <Text
+              style={{
+                color: '#2F855A',
+                fontWeight: '600',
+                fontSize: 18,
+                minWidth: 32,
+                textAlign: 'center',
+                marginHorizontal: 8,
+                letterSpacing: 1,
+              }}
+            >
+              {quantity}
+            </Text>
+
+            {/* Plus button */}
+            <TouchableOpacity
+              onPress={() => addToCart(product)}
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 16,
+                backgroundColor: 'green', // green-400
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              activeOpacity={0.9}
+            >
+              <Plus size={18} color="#fff" />
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity
+            onPress={() => addToCart(product)}
+            className="bg-white border border-green-200 py-2 rounded-full items-center mt-2"
+            activeOpacity={0.9}
+          >
+            <Text className="text-green-600 font-semibold text-base tracking-wide">ADD</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    );
+  };
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#fff" }}>
+        <ActivityIndicator size="large" color="#22c55e" />
+        <Text style={{ marginTop: 20, fontSize: 16, color: "#888" }}>Loading Products...</Text>
+      </View>
+    );
+  }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }} edges={['left', 'right', 'bottom']}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: currentBgColor }} edges={['left', 'right', 'bottom']}>
       {/* Top Bar */}
       <GradientBlock
         navigation={navigation}
@@ -262,112 +412,113 @@ export default function HomeScreen({ navigation }) {
         categoryColors={categoryColors}
       />
 
-      <ScrollView 
-        className="flex-1" 
-        contentContainerStyle={{ paddingBottom: 100 }}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Horizontal Category Scroll */}
+      {/* Horizontal Category Scroll */}
         <CategoryTabs
           categories={categories}
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
           categoryColors={categoryColors}
+          underlines={categoryTheme}
         />
 
-        {/* Products Grid */}
+      <ScrollView
+        className="flex-1"
+        showsVerticalScrollIndicator={false}
+      >
+
+        {/* Hot Deals */}
+        <HotDeals 
+          hotDeals={filteredHotDeals}
+        />
+
+        {/* Featured Products */}
         <View className="p-4">
           <Text className="text-xl font-bold text-gray-800 mb-4">
-            {selectedCategory === 'all' ? 'All Products' :
+            {selectedCategory === 'all' ? 'Featured Products' :
               categories.find(c => c.id === selectedCategory)?.name}
           </Text>
-
           <View className="flex-row flex-wrap justify-between">
-            {filteredProducts.map((product) => {
-              const cartItem = cartItems.find(item => item.id === product.id);
-              const quantity = cartItem ? cartItem.quantity : 0;
-
-              return (
-                <View key={product.id} className="w-[48%] mb-4 bg-white rounded-2xl shadow-md p-3">
-
-                  {/* Product Image */}
-                  <Image
-                    source={{ uri: product.image }}
-                    className="w-full h-32 rounded-xl mb-3"
-                    resizeMode="contain"
-                  />
-
-                  {/* Product Name */}
-                  <Text className="text-base font-semibold text-gray-900 mb-0.5" numberOfLines={1}>
-                    {product.name}
-                  </Text>
-
-                  {/* Product Price */}
-                  <Text className="text-sm text-green-700 font-semibold mb-3">₹{product.price}</Text>
-
-                  {/* Cart Actions */}
-                  {quantity > 0 ? (
-                    <View className="rounded-full shadow-md overflow-hidden">
-                      <LinearGradient
-                        colors={['#67f57d', '#1ee83c']}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                        style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 8, paddingVertical: 8, borderRadius: 999 }}
-                      >
-
-                        {/* Minus Button */}
-                        <TouchableOpacity
-                          onPress={() => removeFromCart(product.id)}
-                          className="w-8 h-8 bg-white border border-green-300 rounded-full items-center justify-center shadow"
-                          activeOpacity={0.9}
-                        >
-                          <Minus size={20} color="#2F855A" />
-                        </TouchableOpacity>
-
-                        {/* Quantity */}
-                        <Text className="text-white font-bold text-lg mx-3">{quantity}</Text>
-
-                        {/* Plus Button */}
-                        <TouchableOpacity
-                          onPress={() => addToCart(product)}
-                          className="w-8 h-8 bg-white border border-green-300 rounded-full items-center justify-center shadow"
-                          activeOpacity={0.9}
-                        >
-                          <Plus size={20} color="#2F855A" />
-                        </TouchableOpacity>
-
-                      </LinearGradient>
-                    </View>
-                  ) : (
-                    <TouchableOpacity
-                      onPress={() => addToCart(product)}
-                      className="bg-white border border-green-200 px-4 py-3 rounded-full items-center"
-                      activeOpacity={0.9}
-                    >
-                      <Text className="text-green-600 font-semibold text-base tracking-wide">ADD</Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
-              );
-            })}
+            {filteredFeatured.length > 0 ? (
+              filteredFeatured.map((product, idx) => renderProductCard(product, idx))
+            ) : (
+              <Text className="text-gray-400 text-base">No products found for this category.</Text>
+            )}
           </View>
         </View>
 
-        {/* Grocery & Kitchen Section */}
+        {/* New Arrivals */}
         <View className="p-4 bg-white mt-2 mb-4 rounded-lg">
-          <Text className="text-xl font-bold text-gray-800 mb-4">Trending</Text>
+          <Text className="text-xl font-bold text-gray-800 mb-4">New Arrivals</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} className="pb-2">
-            {groceryKitchenItems.map((item, index) => (
-              <TouchableOpacity
-                key={index}
-                className="w-32 items-center mr-4 bg-gray-50 p-3 rounded-lg border border-gray-100"
-              >
+            {newArrivals.map((product, index) => (
+              <View key={product._id || index} className="w-36 items-center mr-4 bg-gray-50 p-3 rounded-lg border border-gray-100">
                 <Image
-                  source={{ uri: item.image }}
+                  source={{ uri: product.thumbnail }}
                   style={{ width: 80, height: 80 }}
                   className="rounded-md mb-2"
                 />
-                <Text className="text-center text-sm font-medium text-gray-800">{item.name}</Text>
+                <Text className="text-center text-sm font-medium text-gray-800" numberOfLines={2}>{product.name}</Text>
+                <Text className="text-xs text-green-700 font-semibold">₹{product.pricing?.sellingPrice}</Text>
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* Offers / Discounts */}
+        <View className="p-4 bg-white mt-2 mb-4 rounded-lg">
+          <Text className="text-xl font-bold text-gray-800 mb-4">Best Offers</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="pb-2">
+            {offers.map((product, index) => (
+              <View key={product._id || index} className="w-36 items-center mr-4 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                <Image
+                  source={{ uri: product.thumbnail }}
+                  style={{ width: 80, height: 80 }}
+                  className="rounded-md mb-2"
+                />
+                <Text className="text-center text-sm font-medium text-gray-800" numberOfLines={2}>{product.name}</Text>
+                <Text className="text-xs text-green-700 font-semibold">₹{product.pricing?.sellingPrice}</Text>
+                {product.pricing?.offerTag && (
+                  <Text className="text-xs text-red-500">{product.pricing.offerTag}</Text>
+                )}
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+
+
+        {/* Quick Picks (Shop by Category) */}
+        <View className="p-4 bg-white mt-2 mb-4 rounded-lg">
+          <Text className="text-xl font-bold text-gray-800 mb-4">Categories</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="pb-2">
+            {categoriesList.map((cat, index) => (
+              <View key={cat._id || index} className="w-40 mr-4 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                <Image
+                  source={{ uri: cat.image }}
+                  style={{ width: 60, height: 60 }}
+                  resizeMode="cover"
+                  className="rounded-md mb-2 self-center"
+                />
+                <Text className="text-center text-sm font-semibold text-gray-800 mb-2">{cat.name}</Text>
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* Trending Section */}
+        <View className="p-4 bg-white mt-2 mb-4 rounded-lg">
+          <Text className="text-xl font-bold text-gray-800 mb-4">Trending</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="pb-2">
+            {trendingProducts.map((item, index) => (
+              <TouchableOpacity
+                key={item._id || index}
+                className="w-32 items-center mr-4 bg-gray-50 p-3 rounded-lg border border-gray-100"
+              >
+                <Image
+                  source={{ uri: item.thumbnail }}
+                  style={{ width: 80, height: 80 }}
+                  className="rounded-md mb-2"
+                />
+                <Text className="text-center text-sm font-medium text-gray-800" numberOfLines={2}>{item.name}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
@@ -379,8 +530,8 @@ export default function HomeScreen({ navigation }) {
       {totalItems > 0 && (
         <Animated.View
           style={[
-            styles.cartButton, 
-            { 
+            styles.cartButton,
+            {
               transform: [{ scale: bounceValue }],
               bottom: Platform.OS === 'ios' ? insets.bottom + 80 : 96,
               right: 20

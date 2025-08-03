@@ -118,8 +118,10 @@ export default function Profile() {
             {[
               { Icon: Wallet, text: 'Wallet', screen: 'Wallet' },
               { Icon: CreditCard, text: 'Money', screen: 'Money' },
+              { Icon: CreditCard, text: 'Test', screen: 'Test' },
             ].map((item, index) => (
               <TouchableOpacity
+                onPress={() => navigate.navigate(item.screen)}
                 key={index}
                 className={`flex-row items-center justify-between py-3 ${index < 1 ? 'border-b border-gray-100' : ''}`}
               >

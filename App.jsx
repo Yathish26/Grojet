@@ -26,6 +26,7 @@ import DeleteAccount from 'screens/DeleteAccount';
 import DeleteFinal from 'screens/DeleteFinal';
 import OffersInfo from 'screens/OffersInfo';
 import Categories from 'screens/Categories';
+import Search from 'screens/Search';
 
 import { useFonts, Outfit_400Regular, Outfit_500Medium, Outfit_600SemiBold, Outfit_700Bold } from '@expo-google-fonts/outfit';
 import { Text, View, Platform } from 'react-native';
@@ -97,6 +98,7 @@ export default function App() {
               <Stack.Screen name="MainTabs" component={MainTabs} />
               
               {/* Other Screens */}
+              <Stack.Screen name="Search" component={Search} />
               <Stack.Screen name="Payments" component={Payments} />
               <Stack.Screen name="AddressBook" component={Addresses} />
               <Stack.Screen name="AddNewAddress" component={NewAddress} />
@@ -114,7 +116,7 @@ export default function App() {
               <Stack.Screen name="OffersInfo" component={OffersInfo} />
             </Stack.Navigator>
 
-            <StatusBar style="auto" translucent={Platform.OS === 'android'} backgroundColor="transparent" />
+            <StatusBar style="auto" translucent />
           </NavigationContainer>
         </View>
       </SafeAreaProvider>

@@ -1,29 +1,55 @@
 import React from 'react';
-import { View, TextInput, TouchableOpacity, Platform, StyleSheet } from 'react-native';
-import { Search, X } from 'lucide-react-native'; // or your icon library
+import { View, Text, TextInput, TouchableOpacity, Platform, StyleSheet } from 'react-native';
+import { Search } from 'lucide-react-native'; // or your icon library
 
-const SearchBar = ({ searchtext, setSearchText, placeholder = 'Search' }) => (
-  <View style={styles.container}>
-    <View style={styles.inputWrapper}>
-      <Search size={20} color="#666" />
-      <TextInput
-        style={styles.input}
-        value={searchtext}
-        onChangeText={setSearchText}
-        placeholder={placeholder}
-        placeholderTextColor="#999"
-        underlineColorAndroid="transparent"
-        autoCorrect={false}
-        clearButtonMode='never'
-      />
-      {searchtext.length > 0 && (
-        <TouchableOpacity onPress={() => setSearchText('')}>
-          <X size={20} color="#666" />
-        </TouchableOpacity>
-      )}
+const SearchBar = ({ 
+  searchtext, 
+  setSearchText, 
+  placeholder = 'Search', 
+  onPress,
+  navigation,
+  editable = false 
+}) => {
+  
+  const handlePress = () => {
+    if (onPress) {
+      onPress();
+    } else if (navigation) {
+      navigation.navigate('Search');
+    }
+  };
+
+  if (editable) {
+    // Return the original TextInput version when editable
+    return (
+      <View style={styles.container}>
+        <View style={styles.inputWrapper}>
+          <Search size={20} color="#666" />
+          <TextInput
+            style={styles.input}
+            value={searchtext}
+            onChangeText={setSearchText}
+            placeholder={placeholder}
+            placeholderTextColor="#999"
+            underlineColorAndroid="transparent"
+            autoCorrect={false}
+            clearButtonMode='never'
+          />
+        </View>
+      </View>
+    );
+  }
+
+  // Return touchable version for navigation
+  return (
+    <View style={styles.container}>
+      <TouchableOpacity style={styles.inputWrapper} onPress={handlePress} activeOpacity={0.7}>
+        <Search size={20} color="#666" />
+        <Text style={styles.placeholderText}>{placeholder}</Text>
+      </TouchableOpacity>
     </View>
-  </View>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -52,6 +78,13 @@ const styles = StyleSheet.create({
     paddingVertical: Platform.OS === 'ios' ? 4 : 0,
     // Removes extra line-height on iOS
     height: Platform.OS === 'ios' ? 28 : 40,
+  },
+  placeholderText: {
+    flex: 1,
+    color: '#999',
+    fontSize: 16,
+    paddingLeft: 12,
+    paddingVertical: Platform.OS === 'ios' ? 8 : 12,
   },
 });
 

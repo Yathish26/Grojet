@@ -5,62 +5,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
 
 export default function Orders() {
-  const orders = [
-    {
-      id: 'ORD001',
-      date: 'July 1, 2025',
-      status: 'Delivered',
-      total: '₹450.00',
-      items: 3,
-      products: [
-        { name: 'Fresh Apples (1kg)', price: '₹150.00', image: 'https://i.pinimg.com/736x/4a/de/37/4ade3729109e48e14e0e3126f49df099.jpg' },
-        { name: 'Organic Milk (1L)', price: '₹80.00', image: 'https://placehold.co/60x60/4CAF50/FFFFFF?text=Item2' },
-        { name: 'Brown Bread', price: '₹50.00', image: 'https://placehold.co/60x60/689F38/FFFFFF?text=Item3' },
-      ],
-      deliveryAddress: '123 Main St, Garden City, India',
-      deliveryDate: 'July 1, 2025',
-    },
-    {
-      id: 'ORD002',
-      date: 'June 28, 2025',
-      status: 'Out for Delivery',
-      total: '₹750.50',
-      items: 2,
-      products: [
-        { name: 'Basmati Rice (5kg)', price: '₹450.50', image: 'https://placehold.co/60x60/4CAF50/FFFFFF?text=Item2' },
-        { name: 'Dal (1kg)', price: '₹300.00', image: 'https://placehold.co/60x60/7CB342/FFFFFF?text=Item4' },
-      ],
-      deliveryAddress: '456 Green Valley Rd, Tech Park, India',
-      deliveryDate: 'July 5, 2025',
-    },
-    {
-      id: 'ORD003',
-      date: 'June 25, 2025',
-      status: 'Cancelled',
-      total: '₹200.00',
-      items: 1,
-      products: [
-        { name: 'Olive Oil (1L)', price: '₹200.00', image: 'https://placehold.co/60x60/8BC34A/FFFFFF?text=Item1' },
-      ],
-      deliveryAddress: '789 Lake View Apt, Downtown, India',
-      cancellationReason: 'Customer request',
-    },
-    {
-      id: 'ORD004',
-      date: 'June 20, 2025',
-      status: 'Confirmed',
-      total: '₹320.00',
-      items: 4,
-      products: [
-        { name: 'Potatoes (2kg)', price: '₹80.00', image: 'https://placehold.co/60x60/689F38/FFFFFF?text=Item3' },
-        { name: 'Onions (1kg)', price: '₹40.00', image: 'https://placehold.co/60x60/8BC34A/FFFFFF?text=Item1' },
-        { name: 'Tomatoes (1kg)', price: '₹60.00', image: 'https://placehold.co/60x60/4CAF50/FFFFFF?text=Item2' },
-        { name: 'Spinach (500g)', price: '₹140.00', image: 'https://placehold.co/60x60/7CB342/FFFFFF?text=Item4' },
-      ],
-      deliveryAddress: '101 City Center, New Area, India',
-      deliveryDate: 'July 6, 2025',
-    }
-  ];
+  const orders = []
 
   const navigation = useNavigation();
 

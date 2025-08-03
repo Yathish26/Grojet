@@ -14,7 +14,7 @@ import { Image as ExpoImage } from "expo-image";
 import GradientBlock from "components/Home/GradientBlock";
 import AppText from "components/AppText";
 
-const API_URL = "http://192.168.1.35:5000/categories";
+const API_URL = "http://192.168.1.38:5000/categories";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const SPACING = 12;

@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import BackHeader from 'components/BackHeader';
 import { Truck, ShoppingBasket, Package, Award } from 'lucide-react-native';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
 
 export default function AboutUs() {
   const navigation = useNavigation();
@@ -12,10 +12,11 @@ export default function AboutUs() {
       <View className="px-6 pt-4 pb-8">
         {/* Hero Section */}
         <View className="items-center mb-8">
-          <View className="bg-green-100 p-5 rounded-full mb-6">
-            <ShoppingBasket size={48} color="green" />
-          </View>
-          <Text className="text-3xl font-bold text-gray-900 mb-3">Grojet</Text>
+          <Image
+            source={require('../assets/grojetF.png')}
+            resizeMode="contain"
+            style={{ width: 128, height: 128, marginBottom: 8 }}
+          />
           <Text className="text-lg text-gray-600 text-center leading-relaxed">
             Your trusted local grocery delivery partner in Mangalore
           </Text>
