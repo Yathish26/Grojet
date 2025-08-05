@@ -10,11 +10,10 @@ import {
     ActivityIndicator,
     FlatList,
     Alert,
+    StyleSheet,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
-    ArrowLeft,
-    Search,
     ShoppingCart,
     Minus,
     Plus,
@@ -22,6 +21,8 @@ import {
     Grid3X3,
     List,
     SlidersHorizontal,
+    ChevronUp,
+    ChevronDown,
 } from 'lucide-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
@@ -42,6 +43,7 @@ export default function CategoryProducts({ route, navigation }) {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [loadingMore, setLoadingMore] = useState(false);
+    const [showSort, setShowSort] = useState(false);
     const insets = useSafeAreaInsets();
 
     // Fetch category products
@@ -161,22 +163,6 @@ export default function CategoryProducts({ route, navigation }) {
         }
     };
 
-    // Sort options
-    const showSortOptions = () => {
-        Alert.alert(
-            'Sort Products',
-            'Choose sorting option',
-            [
-                { text: 'Name A-Z', onPress: () => { setSortBy('name'); setSortOrder('asc'); } },
-                { text: 'Name Z-A', onPress: () => { setSortBy('name'); setSortOrder('desc'); } },
-                { text: 'Price Low to High', onPress: () => { setSortBy('price'); setSortOrder('asc'); } },
-                { text: 'Price High to Low', onPress: () => { setSortBy('price'); setSortOrder('desc'); } },
-                { text: 'Highest Discount', onPress: () => { setSortBy('discount'); setSortOrder('desc'); } },
-                { text: 'Cancel', style: 'cancel' }
-            ]
-        );
-    };
-
     // Render product item
     const renderProductItem = ({ item }) => {
         const cartItem = cartItems.find(cartItem => cartItem._id === item._id);
@@ -217,7 +203,7 @@ export default function CategoryProducts({ route, navigation }) {
                                     borderRadius: 999,
                                     backgroundColor: '#fff',
                                     borderWidth: 1,
-                                    borderColor: '#68D391', // green-200
+                                    borderColor: '#68D391',
                                     marginTop: 8,
                                 }}
                             >
@@ -228,7 +214,7 @@ export default function CategoryProducts({ route, navigation }) {
                                         width: 32,
                                         height: 32,
                                         borderRadius: 16,
-                                        backgroundColor: 'green', // green-400
+                                        backgroundColor: 'green',
                                         alignItems: 'center',
                                         justifyContent: 'center',
                                     }}
@@ -259,7 +245,7 @@ export default function CategoryProducts({ route, navigation }) {
                                         width: 32,
                                         height: 32,
                                         borderRadius: 16,
-                                        backgroundColor: 'green', // green-400
+                                        backgroundColor: 'green',
                                         alignItems: 'center',
                                         justifyContent: 'center',
                                     }}
@@ -285,9 +271,12 @@ export default function CategoryProducts({ route, navigation }) {
         // Grid view
         return (
             <View className="flex-1 bg-white rounded-xl p-3 m-1 max-w-[48%]">
-                <View className="items-center mb-2 bg-gray-50 rounded-lg p-2">
-                    <Image source={{ uri: item.thumbnail }} className="w-20 h-20 rounded" />
-                </View>
+                <Image
+                    source={{ uri: item.thumbnail }}
+                    className="w-full h-36 rounded-xl mb-2"
+                    style={{ width: '100%', height: 144, borderRadius: 12 }}
+                    resizeMode="cover"
+                />
                 <Text className="text-sm font-semibold text-gray-900 mb-1" numberOfLines={2}>{item.name}</Text>
                 <Text className="text-xs text-gray-500 mb-1">{item.brand}</Text>
                 <View className="flex-row items-center mb-1">
@@ -316,7 +305,7 @@ export default function CategoryProducts({ route, navigation }) {
                             borderRadius: 999,
                             backgroundColor: '#fff',
                             borderWidth: 1,
-                            borderColor: '#68D391', // green-200
+                            borderColor: '#68D391',
                             marginTop: 8,
                         }}
                     >
@@ -327,7 +316,7 @@ export default function CategoryProducts({ route, navigation }) {
                                 width: 32,
                                 height: 32,
                                 borderRadius: 16,
-                                backgroundColor: 'green', // green-400
+                                backgroundColor: 'green',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                             }}
@@ -358,7 +347,7 @@ export default function CategoryProducts({ route, navigation }) {
                                 width: 32,
                                 height: 32,
                                 borderRadius: 16,
-                                backgroundColor: 'green', // green-400
+                                backgroundColor: 'green',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                             }}
@@ -410,25 +399,75 @@ export default function CategoryProducts({ route, navigation }) {
             </View>
 
             {/* Controls */}
-            <View className="flex-row justify-between items-center px-4 py-3 bg-white border-b border-gray-200">
-                <TouchableOpacity onPress={showSortOptions} className="flex-row items-center px-3 py-2 rounded-lg border border-gray-300">
-                    <SlidersHorizontal size={18} color="#666" />
-                    <Text className="ml-2 text-sm text-gray-700">Sort</Text>
-                </TouchableOpacity>
-                <View className="flex-row rounded-lg border border-gray-300 overflow-hidden">
-                    <TouchableOpacity
-                        onPress={() => setViewMode('grid')}
-                        className={`p-2 ${viewMode === 'grid' ? 'bg-emerald-50' : 'bg-white'}`}
-                    >
-                        <Grid3X3 size={18} color={viewMode === 'grid' ? '#22c55e' : '#666'} />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => setViewMode('list')}
-                        className={`p-2 ${viewMode === 'list' ? 'bg-emerald-50' : 'bg-white'}`}
-                    >
-                        <List size={18} color={viewMode === 'list' ? '#22c55e' : '#666'} />
-                    </TouchableOpacity>
+            <View className="px-4 py-3 bg-white border-b border-gray-200">
+                {/* Sort Button and View Toggle Row */}
+                <View className="flex-row justify-between items-center">
+                    {/* Sort Button */}
+                    <View>
+                        <TouchableOpacity
+                            onPress={() => setShowSort(prev => !prev)}
+                            className="flex-row items-center px-3 py-2 rounded-lg border border-gray-300 bg-white"
+                            activeOpacity={0.8}
+                        >
+                            <SlidersHorizontal size={18} color="#666" />
+                            <Text className="ml-2 text-sm text-gray-700 font-semibold">
+                                Sort
+                            </Text>
+                            <Text className="ml-1 text-lg">{showSort ? <ChevronUp size={18} /> : <ChevronDown size={18} />}</Text>
+                        </TouchableOpacity>
+                    </View>
+                    {/* View Toggle */}
+                    <View className="flex-row rounded-lg border border-gray-300 overflow-hidden">
+                        <TouchableOpacity
+                            onPress={() => setViewMode('grid')}
+                            className={`p-2 ${viewMode === 'grid' ? 'bg-emerald-50' : 'bg-white'}`}
+                        >
+                            <Grid3X3 size={18} color={viewMode === 'grid' ? '#22c55e' : '#666'} />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => setViewMode('list')}
+                            className={`p-2 ${viewMode === 'list' ? 'bg-emerald-50' : 'bg-white'}`}
+                        >
+                            <List size={18} color={viewMode === 'list' ? '#22c55e' : '#666'} />
+                        </TouchableOpacity>
+                    </View>
                 </View>
+
+                {/* Animated/Collapsible Sort Options */}
+                {showSort && (
+                    <View className="flex-row flex-wrap mt-3 gap-2">
+                        <TouchableOpacity
+                            onPress={() => { setSortBy('name'); setSortOrder('asc'); setShowSort(false); }}
+                            className={`px-3 py-2 rounded-lg border ${sortBy === 'name' && sortOrder === 'asc' ? 'bg-emerald-100 border-emerald-500' : 'border-gray-300 bg-white'}`}
+                        >
+                            <Text className={`text-sm ${sortBy === 'name' && sortOrder === 'asc' ? 'text-emerald-700 font-bold' : 'text-gray-700'}`}>Name A-Z</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => { setSortBy('name'); setSortOrder('desc'); setShowSort(false); }}
+                            className={`px-3 py-2 rounded-lg border ${sortBy === 'name' && sortOrder === 'desc' ? 'bg-emerald-100 border-emerald-500' : 'border-gray-300 bg-white'}`}
+                        >
+                            <Text className={`text-sm ${sortBy === 'name' && sortOrder === 'desc' ? 'text-emerald-700 font-bold' : 'text-gray-700'}`}>Name Z-A</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => { setSortBy('price'); setSortOrder('asc'); setShowSort(false); }}
+                            className={`px-3 py-2 rounded-lg border ${sortBy === 'price' && sortOrder === 'asc' ? 'bg-emerald-100 border-emerald-500' : 'border-gray-300 bg-white'}`}
+                        >
+                            <Text className={`text-sm ${sortBy === 'price' && sortOrder === 'asc' ? 'text-emerald-700 font-bold' : 'text-gray-700'}`}>Price ↑</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => { setSortBy('price'); setSortOrder('desc'); setShowSort(false); }}
+                            className={`px-3 py-2 rounded-lg border ${sortBy === 'price' && sortOrder === 'desc' ? 'bg-emerald-100 border-emerald-500' : 'border-gray-300 bg-white'}`}
+                        >
+                            <Text className={`text-sm ${sortBy === 'price' && sortOrder === 'desc' ? 'text-emerald-700 font-bold' : 'text-gray-700'}`}>Price ↓</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => { setSortBy('discount'); setSortOrder('desc'); setShowSort(false); }}
+                            className={`px-3 py-2 rounded-lg border ${sortBy === 'discount' && sortOrder === 'desc' ? 'bg-emerald-100 border-emerald-500' : 'border-gray-300 bg-white'}`}
+                        >
+                            <Text className={`text-sm ${sortBy === 'discount' && sortOrder === 'desc' ? 'text-emerald-700 font-bold' : 'text-gray-700'}`}>Highest Discount</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
             </View>
 
             {/* Products List */}
@@ -453,27 +492,22 @@ export default function CategoryProducts({ route, navigation }) {
             {/* Floating Cart Button */}
             {totalItems > 0 && (
                 <Animated.View
-                    className={` bg-green-600 rounded-xl`}
                     style={[
+                        styles.cartButton,
                         {
-                            position: 'absolute',
-                            right: 20,
-                            shadowColor: '#000',
-                            shadowOffset: { width: 0, height: 2 },
-                            shadowOpacity: 0.25,
-                            shadowRadius: 3.84,
-                            elevation: 5,
                             transform: [{ scale: bounceValue }],
-                            bottom: Platform.OS === 'ios' ? insets.bottom + 20 : 36,
+                            bottom: Platform.OS === 'ios' ? insets.bottom + 80 : 96,
+                            right: 20
                         }
                     ]}
+                    className="absolute bg-green-600 rounded-xl p-4 shadow-lg"
                 >
                     <TouchableOpacity
                         onPress={() => navigation.navigate('Cart', { cartItems })}
-                        className="flex-row items-center p-4"
+                        className="flex-row items-center"
                     >
                         <ShoppingCart size={24} color="white" />
-                        <View className="absolute -top-0.5 -right-0.5 bg-red-600 rounded-full min-w-[24px] h-6 items-center justify-center">
+                        <View className="absolute -top-2 -right-2 bg-red-500 rounded-full w-6 h-6 items-center justify-center">
                             <Text className="text-white text-xs font-bold">{totalItems}</Text>
                         </View>
                     </TouchableOpacity>
@@ -482,3 +516,13 @@ export default function CategoryProducts({ route, navigation }) {
         </SafeAreaView>
     );
 }
+
+const styles = StyleSheet.create({
+    cartButton: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+});

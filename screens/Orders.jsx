@@ -88,7 +88,7 @@ export default function Orders() {
             </Text>
             <TouchableOpacity 
               className="mt-6 bg-green-600 px-6 py-3 rounded-lg"
-              onPress={() => navigation.navigate('Home')}
+              onPress={() => navigation.navigate('Homescreen')}
             >
               <Text className="text-white font-medium">Start Shopping</Text>
             </TouchableOpacity>
