@@ -132,7 +132,7 @@ const categoryTint = {
   monsoon: '#e6f6fb',
 };
 
-const API_BASE_URL = "http://192.168.1.38:5000";
+const API_BASE_URL = "https://api.grojetdelivery.com";
 
 export default function HomeScreen({ navigation }) {
   const [selectedCategory, setSelectedCategory] = useState('all');

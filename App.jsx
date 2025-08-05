@@ -26,6 +26,7 @@ import DeleteAccount from 'screens/DeleteAccount';
 import DeleteFinal from 'screens/DeleteFinal';
 import OffersInfo from 'screens/OffersInfo';
 import Categories from 'screens/Categories';
+import CategoryProducts from 'screens/CategoryProducts';
 import Search from 'screens/Search';
 
 import { useFonts, Outfit_400Regular, Outfit_500Medium, Outfit_600SemiBold, Outfit_700Bold } from '@expo-google-fonts/outfit';
@@ -99,6 +100,7 @@ export default function App() {
               
               {/* Other Screens */}
               <Stack.Screen name="Search" component={Search} />
+              <Stack.Screen name="CategoryProducts" component={CategoryProducts} />
               <Stack.Screen name="Payments" component={Payments} />
               <Stack.Screen name="AddressBook" component={Addresses} />
               <Stack.Screen name="AddNewAddress" component={NewAddress} />

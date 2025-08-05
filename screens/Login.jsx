@@ -39,7 +39,7 @@ const Login = () => {
 
         setIsLoading(true);
         try {
-            const response = await fetch('http://192.168.1.38:5000/auth/phone-login', {
+            const response = await fetch('https://api.grojetdelivery.com/auth/phone-login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

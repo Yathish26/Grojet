@@ -9,7 +9,7 @@ export default function Test() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch('http://192.168.1.38:5000/categories');
+        const response = await fetch('https://api.grojetdelivery.com/categories');
         const data = await response.json();
         setRawJson(JSON.stringify(data, null, 2));
         setError('');

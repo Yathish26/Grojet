@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ShoppingCart, Plus, Minus, ArrowRight } from 'lucide-react-native';
 import BackHeader from 'components/BackHeader';
+import * as Haptics from 'expo-haptics';
 
 export default function Cart() {
   const [cartItems, setCartItems] = useState([]);
@@ -27,6 +28,7 @@ export default function Cart() {
 
   // Update quantity using _id and pricing.sellingPrice (not id or price)
   const updateQuantity = async (_id, delta) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     const updatedCart = cartItems.map(item => {
       if (item._id === _id) {
         const newQty = item.quantity + delta;
@@ -39,6 +41,7 @@ export default function Cart() {
   };
 
   const removeItem = async (_id) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     const updatedCart = cartItems.filter(item => item._id !== _id);
     setCartItems(updatedCart);
     await AsyncStorage.setItem('cart', JSON.stringify(updatedCart));
