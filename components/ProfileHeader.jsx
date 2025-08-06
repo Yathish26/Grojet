@@ -49,7 +49,7 @@ const ProfileHeader = memo(({ user, isLoggedIn, isLoading, navigate }) => {
   }
 
   return (
-    <View className="bg-white p-5 border border-gray-100 rounded-xl">
+    <View className="bg-white p-5 border border-gray-200 rounded-b-3xl">
       <Text className="text-2xl font-bold text-gray-900 mb-2 text-center">Login to Profile</Text>
       <Text className="text-gray-500 text-base mb-8 text-center">
         Log in to manage your profile.

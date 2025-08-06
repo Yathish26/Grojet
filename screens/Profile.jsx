@@ -13,6 +13,8 @@ import {
   LogOut,
   UserRoundPlus,
   MessageSquareDashed,
+  HandHelping,
+  GlobeLock,
 } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 import BackHeader from 'components/BackHeader';
@@ -62,7 +64,7 @@ export default function Profile() {
       )}
 
       <View className="flex-1 bg-gray-50">
-        <BackHeader title="Profile" />
+        <BackHeader title="Profile" middle={true} />
         
         <ProfileHeader 
           user={user} 
@@ -137,9 +139,12 @@ export default function Profile() {
           <View className="mb-28 bg-white p-5 rounded-xl border border-gray-200">
             <Text className="text-xs uppercase text-gray-500 font-bold mb-4 tracking-wide">Other Information</Text>
             {[
-              { Icon: Info, text: 'About us', screen: 'Aboutus' },
+              
               { Icon: Lock, text: 'Account Privacy', screen: 'AccountPrivacy' },
               { Icon: Bell, text: 'Notifications', screen: 'Notifications' },
+              { Icon: Info, text: 'About us', screen: 'Aboutus' },
+              { Icon: HandHelping, text: 'Terms of Service', screen: 'TermsofService' },
+              { Icon: GlobeLock, text: 'Privacy Policy', screen: 'PrivacyPolicy' },
               ...(!isLoggedIn ? [{ Icon: UserRoundPlus, text: 'Login', screen: 'Login' }] : []),
               ...(isLoggedIn ? [{
                 Icon: LogOut,
@@ -151,7 +156,7 @@ export default function Profile() {
               <TouchableOpacity
                 key={index}
                 onPress={item.action ? item.action : (() => item.screen && navigate.navigate(item.screen))}
-                className={`flex-row items-center justify-between py-3 ${index < (isLoggedIn ? 3 : 2) ? 'border-b border-gray-100' : ''} ${item.text === 'Log Out' ? 'mt-2' : ''}`}
+                className={`flex-row items-center justify-between py-3 ${index < (isLoggedIn ? 5 : 5) ? 'border-b border-gray-100' : ''} ${item.text === 'Log Out' ? 'mt-2' : ''}`}
               >
                 <View className="flex-row gap-2 items-center">
                   <item.Icon size={20} color={item.color || "#4b5563"} />

@@ -27,12 +27,15 @@ import DeleteFinal from 'screens/DeleteFinal';
 import OffersInfo from 'screens/OffersInfo';
 import Categories from 'screens/Categories';
 import CategoryProducts from 'screens/CategoryProducts';
+import ProductDetail from 'screens/ProductDetail';
+import Checkout from 'screens/Checkout';
 import Search from 'screens/Search';
 
 import { useFonts, Outfit_400Regular, Outfit_500Medium, Outfit_600SemiBold, Outfit_700Bold } from '@expo-google-fonts/outfit';
 import { Text, View, Platform } from 'react-native';
 import TermsOfService from 'screens/TermsOfService';
 import PrivacyPolicy from 'screens/PrivacyPolicy';
+import Otp from 'screens/Otp';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -94,13 +97,15 @@ export default function App() {
               {/* Auth Screens */}
               <Stack.Screen name="Login" component={Login} />
               <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-              
+
               {/* Main Tab Navigator */}
               <Stack.Screen name="MainTabs" component={MainTabs} />
-              
+
               {/* Other Screens */}
               <Stack.Screen name="Search" component={Search} />
               <Stack.Screen name="CategoryProducts" component={CategoryProducts} />
+              <Stack.Screen name="ProductDetail" component={ProductDetail} />
+              <Stack.Screen name="Checkout" component={Checkout} />
               <Stack.Screen name="Payments" component={Payments} />
               <Stack.Screen name="AddressBook" component={Addresses} />
               <Stack.Screen name="AddNewAddress" component={NewAddress} />
@@ -116,6 +121,7 @@ export default function App() {
               <Stack.Screen name="DeleteFinal" component={DeleteFinal} />
               <Stack.Screen name="Test" component={Test} />
               <Stack.Screen name="OffersInfo" component={OffersInfo} />
+              <Stack.Screen name="Otp" component={Otp} />
             </Stack.Navigator>
 
             <StatusBar style="auto" translucent />

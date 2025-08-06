@@ -8,14 +8,15 @@ import {
   TextInput,
   StatusBar,
   Platform,
+  Animated,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ArrowLeft, Search as SearchIcon, Mic } from 'lucide-react-native';
+import { ArrowLeft, Search as SearchIcon, Mic, Plus as PlusIcon, Minus as MinusIcon, X } from 'lucide-react-native';
 import BackHeader from 'components/BackHeader';
-import { SearchBar } from 'react-native-screens';
 
 const Search = ({ navigation }) => {
   const [searchText, setSearchText] = useState('');
+  const [cartItems, setCartItems] = useState([]);
   const insets = useSafeAreaInsets();
 
   // Trending search suggestions data
@@ -110,45 +111,48 @@ const Search = ({ navigation }) => {
     },
   ];
 
+  // Handlers for cart logic
+  const addToCart = (product) => {
+    setCartItems(prev => {
+      const found = prev.find(item => item.id === product.id);
+      if (found) {
+        return prev.map(item =>
+          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
+      }
+      return [...prev, { ...product, quantity: 1 }];
+    });
+  };
+
+  const removeFromCart = (productId) => {
+    setCartItems(prev => {
+      const found = prev.find(item => item.id === productId);
+      if (found && found.quantity > 1) {
+        return prev.map(item =>
+          item.id === productId ? { ...item, quantity: item.quantity - 1 } : item
+        );
+      }
+      return prev.filter(item => item.id !== productId);
+    });
+  };
+
   return (
     <>
-      <BackHeader title="Search" />
+      <BackHeader title="Search" middle={true} />
       <SafeAreaView className="flex-1 bg-white" edges={['left', 'right', 'bottom']}>
         <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-
         {/* Header with Search Bar */}
-        <View
-          style={{
-            backgroundColor: '#fff',
-            paddingHorizontal: 16,
-            paddingTop: 20,
-            paddingBottom: 20,
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <View style={{ flexDirection: 'row', alignItems: 'center', width: '100%' }}>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                alignItems: 'center',
-                backgroundColor: '#f3f4f6', // bg-gray-100
-                borderRadius: 999,
-                paddingHorizontal: 16,
-                minHeight: 44, // Ensures enough height on iOS
-              }}
-            >
+        <View className="bg-white px-4 pt-5 pb-5 flex-col items-center">
+          <View className="flex-row items-center w-full">
+            <View className="flex-1 flex-row items-center bg-gray-100 rounded-full px-4 min-h-[44px]">
               <SearchIcon size={20} color="#999" style={{ marginRight: 8 }} />
               <TextInput
+                className="flex-1 text-gray-700"
                 style={{
-                  flex: 1,
-                  fontSize: 16,
-                  color: '#374151', // text-gray-700
-                  paddingVertical: Platform.OS === 'ios' ? 10 : 8,
+                  paddingVertical: 8,
                   minHeight: 36,
-                  textAlignVertical: 'center', // fixes vertical alignment in Android, doesn't hurt iOS
-                  includeFontPadding: false, // Android only, helps align text
+                  textAlignVertical: 'center',
+                  includeFontPadding: false,
                 }}
                 placeholder="Search for atta, dal, coke and more"
                 placeholderTextColor="#999"
@@ -157,11 +161,16 @@ const Search = ({ navigation }) => {
                 autoFocus
                 returnKeyType="search"
               />
+              {searchText.length > 0 && (
+                <TouchableOpacity
+                  onPress={() => setSearchText('')}
+                  className="ml-2"
+                  hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                >
+                  <X size={20} color="#999" />
+                </TouchableOpacity>
+              )}
             </View>
-
-            <TouchableOpacity style={{ padding: 8, marginLeft: 8 }}>
-              <Mic size={20} color="#666" />
-            </TouchableOpacity>
           </View>
         </View>
 
@@ -173,13 +182,13 @@ const Search = ({ navigation }) => {
               {trendingItems.map((category) => (
                 <TouchableOpacity
                   key={category.id}
-                  className="w-[47%] bg-green-500 rounded-2xl p-3 mb-3"
+                  className="w-[30%] flex-col items-center gap-2 bg-green-700 rounded-2xl p-2 mb-3"
                   activeOpacity={0.9}
                 >
-                  <Text className="text-base font-semibold text-white mb-2">{category.title}</Text>
+                  <Text className="text-base font-semibold text-white">{category.title}</Text>
                   <View className="flex-row gap-2">
-                    {category.items.map((item, index) => (
-                      <View key={item.id} className="bg-white rounded-lg p-1">
+                    {category.items.map((item) => (
+                      <View key={item.id} className="bg-white rounded-xl p-1">
                         <Image source={{ uri: item.image }} className="w-10 h-10 rounded" />
                       </View>
                     ))}
@@ -193,56 +202,91 @@ const Search = ({ navigation }) => {
           <View className="py-5">
             <Text className="text-lg font-bold text-gray-900 mb-4 px-4">Chips & Crisps</Text>
             <View className="flex-row gap-3 px-4">
-              {chipsAndCrisps.map((product) => (
-                <View key={product.id} className="flex-1 bg-white  mr-1">
-                  {/* Badge */}
-                  {product.badge && (
-                    <View className="absolute top-3 left-3 bg-yellow-400 px-2 py-1 rounded z-10">
-                      <Text className="text-xs font-bold text-white">{product.badge}</Text>
-                    </View>
-                  )}
+              {chipsAndCrisps.map((product) => {
+                const quantity = cartItems.find(item => item.id === product.id)?.quantity || 0;
+                return (
+                  <View key={product.id} className="relative flex-1 bg-white rounded-2xl mr-1 p-2">
 
-                  <TouchableOpacity
-                    className="absolute top-20 right-3 border flex-col items-center bg-white border-green-600  rounded-xl z-10"
-                    onPress={() => addToCart(product)}
-                  >
-                    <Text className={`text-md font-bold ${!product.options && 'py-2 px-4'}  text-green-500`}>ADD</Text>
-                    {product.options && (
-                      <View className='bg-green-100 px-2 py-1 rounded-xl'>
-                        <Text className="text-xs text-black ">{product.options}</Text>
+                    {/* Add to Cart / Plus Minus Controls */}
+                    {quantity > 0 ? (
+                      <View
+                        className="absolute -top-2 right-0 flex-row items-center bg-white border border-green-600 rounded-xl px-2 py-1 z-10"
+                        style={{
+                          shadowColor: "#22c55e",
+                          shadowOffset: { width: 0, height: 1 },
+                          shadowOpacity: 0.15,
+                          opacity: 0.8,
+                          shadowRadius: 3,
+                          elevation: 3,
+                        }}
+                      >
+                        {/* Minus button */}
+                        <TouchableOpacity
+                          onPress={() => removeFromCart(product.id)}
+                          className="w-8 h-8 items-center justify-center"
+                          activeOpacity={0.85}
+                        >
+                          <MinusIcon color="green" size={20} />
+                        </TouchableOpacity>
+                        {/* Quantity */}
+                        <Text className="mx-3 text-green-700 font-bold text-lg">{quantity}</Text>
+                        {/* Plus button */}
+                        <TouchableOpacity
+                          onPress={() => addToCart(product)}
+                          className="w-8 h-8 items-center justify-center"
+                          activeOpacity={0.85}
+                        >
+                          <PlusIcon color="green" size={20} />
+                        </TouchableOpacity>
                       </View>
+                    ) : (
+                      <TouchableOpacity
+                        className="absolute -top-2 right-0 border flex-row items-center bg-white border-green-600 rounded-xl px-4 py-2 z-10"
+                        onPress={() => addToCart(product)}
+                        activeOpacity={0.85}
+                        style={{
+                          shadowColor: "#22c55e",
+                          shadowOffset: { width: 0, height: 1 },
+                          shadowOpacity: 0.15,
+                          shadowRadius: 3,
+                          opacity: 0.7,
+                          elevation: 3,
+                        }}
+                      >
+                        <PlusIcon color="green" size={20} />
+                      </TouchableOpacity>
                     )}
-                  </TouchableOpacity>
 
-                  {/* Product Image */}
-                  <Image source={{ uri: product.image }} className="w-full h-24 rounded-lg mb-2" resizeMode="contain" />
+                    {/* Product Image */}
+                    <Image source={{ uri: product.image }} className="w-full h-32 rounded-lg mb-2" resizeMode="contain" />
 
-                  {/* Delivery Time */}
-                  <View className="flex-row items-center mb-2">
-                    <View className="w-2 h-2 rounded-full bg-green-500 mr-2" />
-                    <Text className="text-[10px] text-gray-500 font-semibold">{product.deliveryTime}</Text>
-                  </View>
-
-                  {/* Product Name */}
-                  <Text className="font-semibold text-gray-800 text-[15px] mb-1" numberOfLines={2}>{product.name}</Text>
-
-                  {/* Rating + Reviews */}
-                  <View className="flex-row items-center mb-2">
-                    <Text className="text-yellow-400 text-xs mr-1">★</Text>
-                    <Text className="text-xs font-semibold text-gray-700 mr-1">{product.rating}</Text>
-                    <Text className="text-xs text-gray-400">({product.reviews})</Text>
-                  </View>
-
-                  {/* Weight + Price */}
-                  <View className="flex-row items-center justify-between mb-2">
-                    <View className="flex-row items-center bg-gray-100 rounded px-2 py-0.5">
-                      <View className="w-2 h-2 rounded-full bg-green-500 mr-1" />
-                      <Text className="text-xs font-semibold text-gray-500">{product.weight}</Text>
+                    {/* Delivery Time */}
+                    <View className="flex-row items-center mb-2">
+                      <View className="w-2 h-2 rounded-full bg-green-500 mr-2" />
+                      <Text className="text-[10px] text-gray-500 font-semibold">{product.deliveryTime}</Text>
                     </View>
-                    <Text className="font-bold text-base text-gray-900">₹{product.price}</Text>
+
+                    {/* Product Name */}
+                    <Text className="font-semibold text-gray-800 text-[15px] mb-1" numberOfLines={2}>{product.name}</Text>
+
+                    {/* Rating + Reviews */}
+                    <View className="flex-row items-center mb-2">
+                      <Text className="text-yellow-400 text-xs mr-1">★</Text>
+                      <Text className="text-xs font-semibold text-gray-700 mr-1">{product.rating}</Text>
+                      <Text className="text-xs text-gray-400">({product.reviews})</Text>
+                    </View>
+
+                    {/* Weight + Price */}
+                    <View className="flex-row items-center justify-between mb-2">
+                      <View className="flex-row items-center bg-gray-100 rounded px-2 py-0.5">
+                        <View className="w-2 h-2 rounded-full bg-green-500 mr-1" />
+                        <Text className="text-xs font-semibold text-gray-500">{product.weight}</Text>
+                      </View>
+                      <Text className="font-bold text-base text-gray-900">₹{product.price}</Text>
+                    </View>
                   </View>
-                </View>
-              ))}
+                );
+              })}
             </View>
           </View>
         </ScrollView>

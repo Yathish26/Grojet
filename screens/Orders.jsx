@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import BackHeader from 'components/BackHeader';
-import { Package, ShoppingCart, ChevronRight } from 'lucide-react-native';
+import { Package, ShoppingCart, ChevronRight, ArrowRight } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
 
@@ -21,10 +21,10 @@ export default function Orders() {
 
   const RenderOrderItem = (order) => {
     const statusColor = getStatusColor(order.status);
-    
+
     return (
-      <TouchableOpacity 
-        key={order.id} 
+      <TouchableOpacity
+        key={order.id}
         className={`mb-4 rounded-lg border ${statusColor.border} overflow-hidden`}
       >
         <View className={`p-4 ${statusColor.bg}`}>
@@ -43,14 +43,14 @@ export default function Orders() {
             </View>
           </View>
         </View>
-        
+
         <View className="bg-white p-4">
           <View className="flex-row mb-3">
             {order.products.slice(0, 3).map((product, index) => (
               <View key={index} className="mr-2" style={{ width: 60, height: 60 }}>
-                <Image 
-                  source={{ uri: product.image }} 
-                  className="rounded-md w-full h-full" 
+                <Image
+                  source={{ uri: product.image }}
+                  className="rounded-md w-full h-full"
                   resizeMode="cover"
                 />
                 {index === 2 && order.products.length > 3 && (
@@ -61,7 +61,7 @@ export default function Orders() {
               </View>
             ))}
           </View>
-          
+
           <View className="flex-row justify-between items-center">
             <Text className="text-sm text-gray-600">{order.items} {order.items > 1 ? 'items' : 'item'}</Text>
             <View className="flex-row items-center">
@@ -76,21 +76,22 @@ export default function Orders() {
 
   return (
     <View className="flex-1 bg-gray-50">
-      <BackHeader title="My Orders" />
-      
-      <ScrollView className="flex-1 px-4 pt-2 mb-20">
+      <BackHeader title="My Orders" middle={true} />
         {orders.length === 0 ? (
-          <View className="flex-1 items-center justify-center mt-20">
-            <ShoppingCart size={48} color="#9CA3AF" />
-            <Text className="text-gray-500 text-lg font-medium mt-4">No orders yet</Text>
-            <Text className="text-gray-400 text-sm mt-2 text-center max-w-xs">
+          <View className="flex-1 items-center justify-center px-4">
+            <View className="bg-green-50 w-40 h-40 flex items-center justify-center rounded-full mb-6">
+              <Image source={require('assets/Orders/trolley.png')} className="w-24 h-24" />
+            </View>
+            <Text className="text-gray-800 text-2xl font-bold mb-2">No Orders Yet</Text>
+            <Text className="text-gray-500 text-base mb-8 text-center max-w-xs">
               Your orders will appear here once you've made a purchase
             </Text>
-            <TouchableOpacity 
-              className="mt-6 bg-green-600 px-6 py-3 rounded-lg"
-              onPress={() => navigation.navigate('Homescreen')}
+            <TouchableOpacity
+              className="mt-2 bg-green-600 px-8 py-4 rounded-full shadow-lg flex-row items-center"
+              onPress={() => navigation.navigate('MainTabs', { screen: 'Homescreen' })}
             >
-              <Text className="text-white font-medium">Start Shopping</Text>
+              <Text className="text-white font-semibold text-base mr-2">Start Shopping</Text>
+              <ArrowRight size={18} color="white" />
             </TouchableOpacity>
           </View>
         ) : (
@@ -98,7 +99,6 @@ export default function Orders() {
             {orders.map(order => RenderOrderItem(order))}
           </>
         )}
-      </ScrollView>
     </View>
   );
 }

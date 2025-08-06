@@ -171,9 +171,19 @@ export default function CategoryProducts({ route, navigation }) {
         if (viewMode === 'list') {
             return (
                 <View className="flex-row bg-white rounded-xl p-3 my-1 mx-2">
-                    <Image source={{ uri: item.thumbnail }} className="w-20 h-20 rounded-lg mr-3" />
+                    <TouchableOpacity 
+                        onPress={() => navigation.navigate('ProductDetail', { product: item })}
+                        activeOpacity={0.9}
+                    >
+                        <Image source={{ uri: item.thumbnail }} className="w-20 h-20 rounded-lg mr-3" />
+                    </TouchableOpacity>
                     <View className="flex-1">
-                        <Text className="text-base font-semibold text-gray-900 mb-1" numberOfLines={2}>{item.name}</Text>
+                        <TouchableOpacity 
+                            onPress={() => navigation.navigate('ProductDetail', { product: item })}
+                            activeOpacity={0.7}
+                        >
+                            <Text className="text-base font-semibold text-gray-900 mb-1" numberOfLines={2}>{item.name}</Text>
+                        </TouchableOpacity>
                         <Text className="text-sm text-gray-500 mb-2">{item.brand}</Text>
                         <View className="flex-row items-center mb-1">
                             <Text className="text-base font-bold text-emerald-700 mr-2">₹{item.pricing?.sellingPrice}</Text>
@@ -271,13 +281,23 @@ export default function CategoryProducts({ route, navigation }) {
         // Grid view
         return (
             <View className="flex-1 bg-white rounded-xl p-3 m-1 max-w-[48%]">
-                <Image
-                    source={{ uri: item.thumbnail }}
-                    className="w-full h-36 rounded-xl mb-2"
-                    style={{ width: '100%', height: 144, borderRadius: 12 }}
-                    resizeMode="cover"
-                />
-                <Text className="text-sm font-semibold text-gray-900 mb-1" numberOfLines={2}>{item.name}</Text>
+                <TouchableOpacity 
+                    onPress={() => navigation.navigate('ProductDetail', { product: item })}
+                    activeOpacity={0.9}
+                >
+                    <Image
+                        source={{ uri: item.thumbnail }}
+                        className="w-full h-36 rounded-xl mb-2"
+                        style={{ width: '100%', height: 144, borderRadius: 12 }}
+                        resizeMode="cover"
+                    />
+                </TouchableOpacity>
+                <TouchableOpacity 
+                    onPress={() => navigation.navigate('ProductDetail', { product: item })}
+                    activeOpacity={0.7}
+                >
+                    <Text className="text-sm font-semibold text-gray-900 mb-1" numberOfLines={2}>{item.name}</Text>
+                </TouchableOpacity>
                 <Text className="text-xs text-gray-500 mb-1">{item.brand}</Text>
                 <View className="flex-row items-center mb-1">
                     <Text className="text-sm font-bold text-emerald-700 mr-2">₹{item.pricing?.sellingPrice}</Text>

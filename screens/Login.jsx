@@ -13,6 +13,8 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { useUser } from '../context/UserContext';
 
+const API_BASE_URL = "http://192.168.1.38:5000";
+
 const Login = () => {
     const [formData, setFormData] = useState({
         phone: '',
@@ -26,9 +28,10 @@ const Login = () => {
 
     const validateForm = () => {
         const newErrors = {};
-        if (!formData.phone.trim()) newErrors.phone = 'Phone number is required';
-        else if (!/^\d{10}$/.test(formData.phone)) {
-            newErrors.phone = 'Enter a valid 10-digit phone number';
+        if (!formData.phone.trim()) {
+            newErrors.phone = 'Phone number is required';
+        } else if (!/^[6-9]\d{9}$/.test(formData.phone)) {
+            newErrors.phone = 'Enter a valid 10-digit mobile number';
         }
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -39,40 +42,29 @@ const Login = () => {
 
         setIsLoading(true);
         try {
-            const response = await fetch('https://api.grojetdelivery.com/auth/phone-login', {
+            const response = await fetch(`${API_BASE_URL}/auth/send-otp`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ phone: formData.phone }),
+                body: JSON.stringify({ phoneNumber: formData.phone }),
             });
 
             const data = await response.json();
 
             if (!response.ok) {
-                Alert.alert('Login Failed', data.msg || 'Invalid credentials');
+                Alert.alert('Error', data.message || 'Failed to send OTP');
                 return;
             }
 
-            const success = await login(data.user, data.token);
+            // Navigate to OTP screen with phone number
+            navigation.navigate('Otp', { 
+                phoneNumber: formData.phone,
+                requestId: data.requestId 
+            });
 
-            if (success) {
-                navigation.reset({
-                    index: 0,
-                    routes: [
-                        {
-                            name: 'MainTabs',
-                            state: {
-                                routes: [{ name: 'Homescreen' }],
-                            },
-                        },
-                    ],
-                });
-            } else {
-                Alert.alert('Error', 'Failed to save login data. Please try again.');
-            }
         } catch (error) {
-            console.error('Login error:', error);
+            console.error('Send OTP error:', error);
             Alert.alert('Error', 'Something went wrong. Please try again.');
         } finally {
             setIsLoading(false);
@@ -105,7 +97,7 @@ const Login = () => {
             >
                 <View className="bg-white mx-6 p-6 rounded-2xl shadow-xl z-10">
                     <Text className="text-2xl font-bold text-gray-900 mb-2 text-center">Login / Signup</Text>
-                    <Text className="text-gray-500 text-base mb-8 text-center">Enter your phone number below</Text>
+                    <Text className="text-gray-500 text-base mb-8 text-center">Enter your phone number to receive OTP</Text>
 
                     {/* Phone Number Field */}
                     <View className="mb-5">
@@ -137,6 +129,7 @@ const Login = () => {
                             </Text>
                         )}
                     </View>
+
                     <TouchableOpacity
                         onPress={handleSubmit}
                         className="bg-green-500 py-4 rounded-xl items-center justify-center shadow-md"
@@ -144,13 +137,13 @@ const Login = () => {
                         disabled={isLoading}
                     >
                         <Text className="text-white font-bold text-lg">
-                            {isLoading ? 'Continuing...' : 'Continue'}
+                            {isLoading ? 'Sending OTP...' : 'Send OTP'}
                         </Text>
                     </TouchableOpacity>
 
                     <View className="mt-6 items-center">
                         <Text className="text-xs text-gray-500 text-center">
-                            By clicking Continue, I accept the{' '}
+                            By clicking Send OTP, I accept the{' '}
                             <Text
                                 className="text-green-600 underline"
                                 onPress={() => navigation.navigate('TermsofService')}

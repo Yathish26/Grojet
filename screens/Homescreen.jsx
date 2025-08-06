@@ -34,61 +34,71 @@ const categories = [
   {
     id: 'all',
     name: 'All',
-    IconComponent: ShoppingBag,
+    // IconComponent: ShoppingBag,
+    IconImage:'https://img.icons8.com/?size=100&id=cm8OKbUZ7t8D&format=png&color=000000',
     isNew: false,
   },
   {
     id: 'fresh',
     name: 'Fresh',
-    IconComponent: Leaf,
+    // IconComponent: Leaf,
+    IconImage: 'https://img.icons8.com/?size=100&id=mt7n5rI8STz8&format=png&color=000000', // Fresh vegetables icon
     isNew: false,
   },
   {
     id: 'medicines',
     name: 'Medicines',
-    IconComponent: Pill,
+    // IconComponent: Pill,
+    IconImage: 'https://img.icons8.com/?size=100&id=108787&format=png&color=000000',
     isNew: false,
   },
   {
     id: 'electronics',
     name: 'Electronics',
-    IconComponent: Monitor,
+    // IconComponent: Monitor,
+    IconImage: 'https://img.icons8.com/?size=100&id=Yuy5afbK3Pn9&format=png&color=000000', // Electronics icon
     isNew: false,
   },
   {
     id: 'home',
     name: 'Home',
-    IconComponent: Home,
+    // IconComponent: Home,
+    IconImage: 'https://img.icons8.com/?size=100&id=fSVp4a58MbGQ&format=png&color=000000', // Home icon
     isNew: false,
   },
   {
     id: 'beauty',
     name: 'Beauty',
-    IconComponent: Heart,
+    // IconComponent: Heart,
+    IconImage: 'https://img.icons8.com/?size=100&id=lwEtRSWa3s18&format=png&color=000000', // Beauty/cosmetics icon
     isNew: false,
   },
   {
     id: 'kids',
     name: 'Kids',
-    IconComponent: Baby,
+    // IconComponent: Baby,
+    IconImage: 'https://img.icons8.com/?size=100&id=pGk7DcHHfDAC&format=png&color=000000', // Baby/kids icon
     isNew: false,
   },
   {
     id: 'grocery',
     name: 'Grocery',
-    IconComponent: ShoppingCart,
+    // IconComponent: ShoppingCart,
+    IconImage: 'https://img.icons8.com/?size=100&id=9150kZKYypO8&format=png&color=000000', // Shopping cart icon
     isNew: false,
   },
   {
     id: 'fashion',
     name: 'Fashion',
-    IconComponent: Shirt,
+    // IconComponent: Shirt,
+    IconImage: 'https://img.icons8.com/?size=100&id=cy0WzlUnunku&format=png&color=000000', // Fashion/clothing icon
     isNew: false,
   },
   {
     id: 'monsoon',
     name: 'Monsoon',
-    IconComponent: CloudDrizzle,
+    // IconComponent: CloudDrizzle,
+    IconImage:'https://img.icons8.com/?size=100&id=119609&format=png&color=000000',
     isNew: false,
   },
 ];
@@ -136,7 +146,6 @@ const API_BASE_URL = "https://api.grojetdelivery.com";
 
 export default function HomeScreen({ navigation }) {
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [searchtext, setSearchText] = useState('');
   const [cartItems, setCartItems] = useState([]);
   const [bounceValue] = useState(new Animated.Value(1));
   const [filteredHotDeals, setFilteredHotDeals] = useState([]);
@@ -487,15 +496,15 @@ export default function HomeScreen({ navigation }) {
 
 
         {/* Quick Picks (Shop by Category) */}
-        <View className="p-4 bg-white mt-2 mb-4 rounded-lg">
+        <View className="p-4 mt-2 mb-4 rounded-lg">
           <Text className="text-xl font-bold text-gray-800 mb-4">Categories</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} className="pb-2">
             {categoriesList.map((cat, index) => (
-              <View key={cat._id || index} className="w-40 mr-4 bg-gray-50 p-3 rounded-lg border border-gray-100">
+              <View key={cat._id || index} className="w-40 mr-4 p-3 rounded-lg">
                 <Image
                   source={{ uri: cat.image }}
-                  style={{ width: 60, height: 60 }}
-                  resizeMode="cover"
+                  style={{ width: 120, height: 120 }}
+                  resizeMode="contain"
                   className="rounded-md mb-2 self-center"
                 />
                 <Text className="text-center text-sm font-semibold text-gray-800 mb-2">{cat.name}</Text>

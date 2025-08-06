@@ -62,8 +62,8 @@ export default function Cart() {
         </View>
       ) : cartItems.length === 0 ? (
         <View className="flex-1 items-center justify-center px-4">
-          <View className="bg-green-50 p-6 rounded-full mb-6">
-            <ShoppingCart size={56} color="#22c55e" />
+          <View className="bg-green-50 w-40 h-40 flex items-center justify-center rounded-full mb-6">
+            <Image source={require('assets/Cart/nocart.png')} className="w-24 h-24" />
           </View>
           <Text className="text-gray-800 text-2xl font-bold mb-2">Your cart is empty</Text>
           <Text className="text-gray-500 text-base mb-8 text-center max-w-xs">
@@ -162,7 +162,7 @@ export default function Cart() {
             </View>
             <TouchableOpacity
               className="bg-green-600 py-4 rounded-full items-center shadow-sm flex-row justify-center"
-              onPress={() => alert('Proceeding to Checkout...')}
+              onPress={() => navigation.navigate('Checkout', { cartItems })}
               activeOpacity={0.9}
             >
               <Text className="text-white font-bold text-lg mr-2">Proceed to Checkout</Text>

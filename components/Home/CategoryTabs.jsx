@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, Animated, ScrollView, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, Animated, ScrollView, Dimensions, Image } from 'react-native';
 import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 
@@ -8,19 +8,19 @@ configureReanimatedLogger({
   strict: false,
 });
 
-const TAB_WIDTH = 80;
+const TAB_WIDTH = 75;
 const UNDERLINE_WIDTH = TAB_WIDTH * 0.7;
 const SCROLL_PADDING_LEFT = 4;
 
-// AnimatedIcon component to handle color transitions
-const AnimatedIcon = ({ IconComponent, isActive, activeColor, inactiveColor = '#6B7280', size = 20 }) => {
+// AnimatedIcon component to handle both IconComponent and IconImage
+const AnimatedIcon = ({ IconComponent, IconImage, isActive, activeColor, inactiveColor = '#6B7280', size = 20 }) => {
   const scaleAnimation = useRef(new Animated.Value(isActive ? 1.2 : 1.0)).current;
   const opacityAnimation = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     Animated.parallel([
       Animated.spring(scaleAnimation, {
-        toValue: isActive ? 1.2 : 1.0,
+        toValue: isActive ? 1.4 : 1.0,
         useNativeDriver: true,
         tension: 100,
         friction: 8,
@@ -50,10 +50,21 @@ const AnimatedIcon = ({ IconComponent, isActive, activeColor, inactiveColor = '#
         opacity: opacityAnimation
       }}
     >
-      <IconComponent
-        size={size}
-        color={currentColor}
-      />
+      {IconComponent ? (
+        <IconComponent
+          size={size}
+          color={currentColor}
+        />
+      ) : IconImage ? (
+        <Image
+          source={{ uri: IconImage }}
+          style={{
+            width: size,
+            height: size,
+          }}
+          resizeMode="contain"
+        />
+      ) : null}
     </Animated.View>
   );
 };
@@ -140,6 +151,7 @@ export default function CategoryTabs({ categories, selectedCategory, setSelected
                 <View className="mb-1">
                   <AnimatedIcon
                     IconComponent={cat.IconComponent}
+                    IconImage={cat.IconImage}
                     isActive={isActive}
                     activeColor={getUnderlineColor()}
                     inactiveColor="#6B7280"
