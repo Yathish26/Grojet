@@ -28,6 +28,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
 import BackHeader from 'components/BackHeader';
+import FloatingCartButton from 'components/FloatingCartButton';
 
 const API_BASE_URL = "http://192.168.1.38:5000";
 
@@ -123,6 +124,21 @@ export default function CategoryProducts({ route, navigation }) {
                 return prevItems.filter(item => item._id !== productId);
             }
         });
+
+        Animated.sequence([
+            Animated.timing(bounceValue, {
+                toValue: 1.3,
+                duration: 100,
+                easing: Easing.linear,
+                useNativeDriver: true
+            }),
+            Animated.timing(bounceValue, {
+                toValue: 1,
+                duration: 100,
+                easing: Easing.linear,
+                useNativeDriver: true
+            })
+        ]).start();
     };
 
     // Load cart from storage
@@ -510,39 +526,12 @@ export default function CategoryProducts({ route, navigation }) {
             />
 
             {/* Floating Cart Button */}
-            {totalItems > 0 && (
-                <Animated.View
-                    style={[
-                        styles.cartButton,
-                        {
-                            transform: [{ scale: bounceValue }],
-                            bottom: Platform.OS === 'ios' ? insets.bottom + 80 : 96,
-                            right: 20
-                        }
-                    ]}
-                    className="absolute bg-green-600 rounded-xl p-4 shadow-lg"
-                >
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate('Cart', { cartItems })}
-                        className="flex-row items-center"
-                    >
-                        <ShoppingCart size={24} color="white" />
-                        <View className="absolute -top-2 -right-2 bg-red-500 rounded-full w-6 h-6 items-center justify-center">
-                            <Text className="text-white text-xs font-bold">{totalItems}</Text>
-                        </View>
-                    </TouchableOpacity>
-                </Animated.View>
-            )}
+            <FloatingCartButton
+                totalItems={totalItems}
+                bounceValue={bounceValue}
+                cartItems={cartItems}
+                onPress={(cartItems) => navigation.navigate('Cart', { cartItems })}
+            />
         </SafeAreaView>
     );
 }
-
-const styles = StyleSheet.create({
-    cartButton: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-    },
-});

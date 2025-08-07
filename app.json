@@ -17,17 +17,21 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/splash.png"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
+      "splash": {
+        "image": "./assets/splash-ios.png"
+      },
       "supportsTablet": true
     },
     "android": {
+      "splash": {
+        "image": "./assets/splash-android.png"
+      },
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"

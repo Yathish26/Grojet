@@ -26,6 +26,7 @@ import {
 import CategoryTabs from 'components/Home/CategoryTabs';
 import GradientBlock from 'components/Home/GradientBlock';
 import HotDeals from 'components/Home/HotDeals';
+import FloatingCartButton from 'components/FloatingCartButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
@@ -104,7 +105,7 @@ const categories = [
 ];
 
 const categoryColors = {
-  all: ['#22C55E', '#ffffff'],
+  all: ['#21AD00', '#ffffff'],
   fresh: ['#22C55E', '#ffffff'],
   medicines: ['#F59E0B', '#ffffff'],
   electronics: ['#3B82F6', '#ffffff'],
@@ -536,39 +537,12 @@ export default function HomeScreen({ navigation }) {
       </ScrollView>
 
       {/* Floating Cart Button */}
-      {totalItems > 0 && (
-        <Animated.View
-          style={[
-            styles.cartButton,
-            {
-              transform: [{ scale: bounceValue }],
-              bottom: Platform.OS === 'ios' ? insets.bottom + 80 : 96,
-              right: 20
-            }
-          ]}
-          className="absolute bg-green-600 rounded-xl p-4 shadow-lg"
-        >
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Cart', { cartItems })}
-            className="flex-row items-center"
-          >
-            <ShoppingCart size={24} color="white" />
-            <View className="absolute -top-2 -right-2 bg-red-500 rounded-full w-6 h-6 items-center justify-center">
-              <Text className="text-white text-xs font-bold">{totalItems}</Text>
-            </View>
-          </TouchableOpacity>
-        </Animated.View>
-      )}
+      <FloatingCartButton
+        totalItems={totalItems}
+        bounceValue={bounceValue}
+        cartItems={cartItems}
+        onPress={(cartItems) => navigation.navigate('Cart', { cartItems })}
+      />
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  cartButton: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-});

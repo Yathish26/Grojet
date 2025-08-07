@@ -7,7 +7,7 @@ import SearchBar from '../SearchBar'; // adjust path as needed
 import PropTypes from 'prop-types';
 import AppText from 'components/AppText';
 
-const DEFAULT_GRADIENT = ['#ffffff', '#b9fbc0']; // white to light green
+const DEFAULT_GRADIENT = ['#ffffff', 'skyblue']; // white to sky blue
 
 const GradientBlock = ({
     navigation,
@@ -33,9 +33,6 @@ const GradientBlock = ({
             style={{
                 paddingHorizontal: 16,
                 paddingTop: Platform.OS === 'ios' ? insets.top + 8 : StatusBar.currentHeight + 8,
-                paddingBottom: 12,
-                borderBottomWidth: 1,
-                borderBottomColor: '#f3f4f6',
             }}
         >
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>

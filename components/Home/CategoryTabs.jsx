@@ -118,7 +118,6 @@ export default function CategoryTabs({ categories, selectedCategory, setSelected
         ref={scrollViewRef}
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 8 }}
         bounces
       >
         <View className="flex-row relative" style={{ minHeight: 60 }}>
@@ -155,7 +154,7 @@ export default function CategoryTabs({ categories, selectedCategory, setSelected
                     isActive={isActive}
                     activeColor={getUnderlineColor()}
                     inactiveColor="#6B7280"
-                    size={20}
+                    size={28}
                   />
                 </View>
 
@@ -183,7 +182,8 @@ export default function CategoryTabs({ categories, selectedCategory, setSelected
               position: 'absolute',
               bottom: 0,
               backgroundColor: getUnderlineColor(),
-              borderRadius: 2,
+              borderTopLeftRadius: 2,
+              borderTopRightRadius: 2,
               shadowColor: getUnderlineColor(),
               shadowOffset: { width: 0, height: 1 },
               shadowOpacity: 0.3,
