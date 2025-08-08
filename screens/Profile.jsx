@@ -15,6 +15,7 @@ import {
   MessageSquareDashed,
   HandHelping,
   GlobeLock,
+  User,
 } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 import BackHeader from 'components/BackHeader';
@@ -85,6 +86,12 @@ export default function Profile() {
               <Text className="text-sm text-gray-700 text-center font-medium mt-2">Support</Text>
             </TouchableOpacity>
             <TouchableOpacity
+              onPress={() => navigate.navigate('EditProfile')}
+              className="flex-1 items-center justify-center bg-white p-4 rounded-xl border border-gray-200">
+              <User size={26} color="#4b5563" />
+              <Text className="text-sm text-gray-700 text-center font-medium mt-2">Edit Profile</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
               onPress={() => navigate.navigate('Payments')}
               className="flex-1 items-center justify-center bg-white p-4 rounded-xl border border-gray-200">
               <CreditCard size={26} color="#4b5563" />
@@ -98,7 +105,7 @@ export default function Profile() {
               {[
                 { Icon: ShoppingBag, text: 'Your orders', screen: 'Orders' },
                 { Icon: Heart, text: 'Your wishlist', screen: 'Wishlist' },
-                { Icon: MapPin, text: 'Address book', screen: 'AddressBook' },
+                { Icon: MapPin, text: 'Saved Addresses', screen: 'AddressBook' },
               ].map((item, index) => (
                 <TouchableOpacity
                   key={index}

@@ -60,7 +60,7 @@ const Login = () => {
             // Navigate to OTP screen with phone number
             navigation.navigate('Otp', { 
                 phoneNumber: formData.phone,
-                requestId: data.requestId 
+                requestId: data.requestId
             });
 
         } catch (error) {

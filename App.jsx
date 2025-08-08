@@ -30,12 +30,13 @@ import CategoryProducts from 'screens/CategoryProducts';
 import ProductDetail from 'screens/ProductDetail';
 import Checkout from 'screens/Checkout';
 import Search from 'screens/Search';
-
 import { useFonts, Outfit_400Regular, Outfit_500Medium, Outfit_600SemiBold, Outfit_700Bold } from '@expo-google-fonts/outfit';
 import { Text, View, Platform } from 'react-native';
 import TermsOfService from 'screens/TermsOfService';
 import PrivacyPolicy from 'screens/PrivacyPolicy';
 import Otp from 'screens/Otp';
+import CompleteProfile from 'screens/CompleteProfile';
+import EditProfile from 'screens/EditProfile';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -122,6 +123,8 @@ export default function App() {
               <Stack.Screen name="Test" component={Test} />
               <Stack.Screen name="OffersInfo" component={OffersInfo} />
               <Stack.Screen name="Otp" component={Otp} />
+              <Stack.Screen name="CompleteProfile" component={CompleteProfile} />
+              <Stack.Screen name="EditProfile" component={EditProfile} />
             </Stack.Navigator>
 
             <StatusBar style="auto" translucent />

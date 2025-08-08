@@ -3,7 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { ChevronLeft, Search } from 'lucide-react-native';
 
-export default function BackHeader({ title, search, middle }) {
+export default function BackHeader({ title, search, middle, noback }) {
     const navigation = useNavigation();
 
     return (
@@ -13,9 +13,11 @@ export default function BackHeader({ title, search, middle }) {
         >
             <View className="flex-row items-center justify-between p-4 bg-white">
                 <View className="flex-row gap-4 items-center" style={{ flex: middle ? 1 : undefined }}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <ChevronLeft size={20} color="#4A5568" />
-                    </TouchableOpacity>
+                    {!noback && (
+                        <TouchableOpacity onPress={() => navigation.goBack()}>
+                            <ChevronLeft size={20} color="#4A5568" />
+                        </TouchableOpacity>
+                    )}
                     {!middle && (
                         <Text className="text-xl font-semibold text-gray-800">{title}</Text>
                     )}

@@ -25,7 +25,7 @@ const Otp = () => {
     const route = useRoute();
     const { login } = useUser();
     
-    const { phoneNumber, requestId } = route.params;
+    const { phoneNumber, requestId } = route.params || {};
     
     // Refs for OTP inputs
     const otpRefs = useRef([]);
@@ -107,17 +107,19 @@ const Otp = () => {
             const success = await login(data.user, data.token);
 
             if (success) {
-                navigation.reset({
-                    index: 0,
-                    routes: [
-                        {
-                            name: 'MainTabs',
-                            state: {
-                                routes: [{ name: 'Homescreen' }],
+                if (data.isNewUser) {
+                    navigation.reset({ index: 0, routes: [{ name: 'CompleteProfile' }] });
+                } else {
+                    navigation.reset({
+                        index: 0,
+                        routes: [
+                            {
+                                name: 'MainTabs',
+                                state: { routes: [{ name: 'Homescreen' }] },
                             },
-                        },
-                    ],
-                });
+                        ],
+                    });
+                }
             } else {
                 Alert.alert('Error', 'Failed to save login data. Please try again.');
             }
