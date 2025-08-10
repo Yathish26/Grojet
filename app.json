@@ -28,7 +28,7 @@
       },
       "supportsTablet": true,
       "config": {
-        "googleMapsApiKey": "AIzaSyC_OYiHvy9Oikmrc8PQZXHP4bvTAmgKD34"
+        "googleMapsApiKey": ""
       }
     },
     "android": {
@@ -42,7 +42,7 @@
       "package": "com.iamyathz.grojet",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyC_OYiHvy9Oikmrc8PQZXHP4bvTAmgKD34"
+          "apiKey": ""
         }
       }
     },
