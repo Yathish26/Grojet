@@ -1,61 +1,72 @@
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import AlertBox from 'components/AlertBox';
 import BackHeader from 'components/BackHeader';
 import { ChevronRight, Plus, Building, Home, Hotel, MoreHorizontal, Share } from 'lucide-react-native';
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
 
 export default function Addresses() {
   const [activeOptions, setActiveOptions] = useState(null);
   const [showDelete, setShowDelete] = useState(false);
   const navigation = useNavigation();
 
-  const addressData = [
-    {
-      id: 'work',
-      icon: Building,
-      title: 'Work',
-      description:
-        'Akash Electronics Sumudha Arcade, Ground Floor, Ganeshpura, Kaikamba, Mangaluru, Opposite SBI',
-    },
-    {
-      id: 'home',
-      icon: Home,
-      title: 'Home',
-      description: 'Deviprasad Building Battakodi Kinnigoli, Surathkal, Kinnigoli',
-    },
-    {
-      id: 'hotel',
-      icon: Hotel,
-      title: 'Hotel',
-      description:
-        'Hotel Sasthi Suites KN Extension 4th Cross Triveni Road, Kamla Nehru, Extension, Yeswanthpur, Bengaluru',
-    },
-  ];
+  const [addresses, setAddresses] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const handleDelete = () => {
+  const API_BASE_URL = 'http://192.168.1.38:5000';
+  const iconMap = { home: Home, office: Building, other: MoreHorizontal, work: Building, hotel: Hotel };
+
+  const fetchAddresses = useCallback(async () => {
+    try {
+      setLoading(true);
+      const token = await SecureStore.getItemAsync('userToken');
+      if (!token) { setLoading(false); return; }
+      const resp = await fetch(`${API_BASE_URL}/auth/addresses`, { headers: { 'Authorization': `Bearer ${token}` }});
+      const data = await resp.json();
+      if (resp.ok) setAddresses(data.addresses || []);
+    } catch (err) { console.log('Fetch addresses error', err); } finally { setLoading(false); }
+  }, []);
+
+  useFocusEffect(useCallback(() => { fetchAddresses(); }, [fetchAddresses]));
+
+  const makeDefault = async (index) => {
+    try {
+      const token = await SecureStore.getItemAsync('userToken');
+      const resp = await fetch(`${API_BASE_URL}/auth/addresses/${index}/default`, { method: 'PATCH', headers: { 'Authorization': `Bearer ${token}` }});
+      const data = await resp.json();
+      if (resp.ok) setAddresses(data.addresses);
+    } catch (err) { console.log('Set default address error', err); }
+  };
+
+  const deleteAddress = async (index) => {
+    try {
+      const token = await SecureStore.getItemAsync('userToken');
+      const resp = await fetch(`${API_BASE_URL}/auth/addresses/${index}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` }});
+      const data = await resp.json();
+      if (resp.ok) setAddresses(data.addresses);
+    } catch (err) { console.log('Delete address error', err); }
+  };
+
+  const [pendingDeleteIndex, setPendingDeleteIndex] = useState(null);
+
+  const handleDelete = (index) => {
+    setPendingDeleteIndex(index);
     setShowDelete(true);
-    setActiveOptions(null)
-  }
+    setActiveOptions(null);
+  };
 
   const handleCancelDelete = () => {
     setShowDelete(false);
   }
 
-  const OptionsMenu = ({ addressId }) => (
+  const OptionsMenu = ({ addressIndex }) => (
     <TouchableWithoutFeedback onPress={() => { }}>
       <View className="absolute bottom-10 right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-10 w-40">
         <TouchableOpacity
           className="px-4 py-3 border-b border-gray-100"
           onPress={() => {
-            console.log('Edit', addressId);
+            navigation.navigate('EditAddress', { index: addressIndex, address: addresses[addressIndex] });
             setActiveOptions(null);
           }}
         >
@@ -64,7 +75,8 @@ export default function Addresses() {
         <TouchableOpacity
           className="px-4 py-3 border-b border-gray-100"
           onPress={() => {
-            console.log('Make Default', addressId);
+            console.log('Make Default', addressIndex);
+            makeDefault(addressIndex);
             setActiveOptions(null);
           }}
         >
@@ -72,7 +84,7 @@ export default function Addresses() {
         </TouchableOpacity>
         <TouchableOpacity
           className="px-4 py-3"
-          onPress={handleDelete}
+          onPress={() => { handleDelete(addressIndex); }}
         >
           <Text className="text-red-500">Delete</Text>
         </TouchableOpacity>
@@ -96,7 +108,7 @@ export default function Addresses() {
           message={"Are you sure you want to delete this address ?"}
           b1={"Delete"}
           b2={"Cancel"}
-          onb1={console.log.bind(null, 'Address Deleted')}
+          onb1={() => { if (pendingDeleteIndex !== null) { deleteAddress(pendingDeleteIndex); setPendingDeleteIndex(null); } setShowDelete(false); }}
           onb2={handleCancelDelete}
         />
       )}
@@ -123,30 +135,38 @@ export default function Addresses() {
               <Text className="text-base font-semibold text-gray-700 mt-4 mb-3">Your saved addresses</Text>
 
               {/* Address list */}
-              {addressData.map((address) => (
-                <View key={address.id} className="bg-white p-4 rounded-xl border border-gray-200 mb-3 relative">
+              {loading && <Text className="text-gray-500 mb-2">Loading addresses...</Text>}
+              {(!loading && addresses.length === 0) && (
+                <Text className="text-gray-500 mb-3">No addresses saved yet.</Text>
+              )}
+              {addresses.map((address, idx) => {
+                const Icon = iconMap[address.type] || Home;
+                const description = `${address.street}, ${address.city}, ${address.state} ${address.zipCode}`;
+                return (
+                <View key={idx} className="bg-white p-4 rounded-xl border border-gray-200 mb-3 relative">
                   <View className="flex-row items-center mb-2">
                     <View className="w-8 h-8 rounded-full bg-gray-200 items-center justify-center mr-3">
-                      <address.icon size={20} color="#4A5568" />
+                      <Icon size={20} color="#4A5568" />
                     </View>
-                    <Text className="text-base font-semibold text-gray-800">{address.title}</Text>
+                    <Text className="text-base font-semibold text-gray-800 capitalize">{address.type}</Text>
+                    {address.isDefault && <Text className="ml-2 text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full">Default</Text>}
                   </View>
-                  <Text className="text-sm text-gray-600 mb-2">{address.description}</Text>
+                  <Text className="text-sm text-gray-600 mb-2">{description}</Text>
                   <View className="flex-row items-center justify-end">
                     <TouchableWithoutFeedback onPress={() => { }}>
                       <TouchableOpacity
                         className="mr-4"
                         onPress={() => {
-                          setActiveOptions(activeOptions === address.id ? null : address.id);
+                          setActiveOptions(activeOptions === idx ? null : idx);
                         }}
                       >
                         <MoreHorizontal size={20} color="#4A5568" />
                       </TouchableOpacity>
                     </TouchableWithoutFeedback>
                   </View>
-                  {activeOptions === address.id && <OptionsMenu addressId={address.id} />}
+                  {activeOptions === idx && <OptionsMenu addressIndex={idx} />}
                 </View>
-              ))}
+              ); })}
             </View>
           </ScrollView>
         </View>

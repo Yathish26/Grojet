@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image, TextInput, Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, Text, TouchableOpacity, Image, TextInput, Alert, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {
   CreditCard,
@@ -12,34 +12,20 @@ import {
 import Svgdata from 'components/Svgdata';
 import BackHeader from 'components/BackHeader';
 import { MaskedTextInput } from "react-native-mask-text";
+import * as SecureStore from 'expo-secure-store';
+
+const API_BASE_URL = 'http://192.168.1.38:5000'; // adjust if needed
 
 const Payments = () => {
   const [selectedMethod, setSelectedMethod] = useState('card');
   const [showAddCard, setShowAddCard] = useState(false);
   const [showAddUpi, setShowAddUpi] = useState(false);
-  const [cards, setCards] = useState([
-    {
-      id: '1',
-      type: 'visa',
-      number: '4242424242424242',
-      maskedNumber: '•••• •••• •••• 4242',
-      expiry: '05/25',
-      cvv: '123',
-      name: 'John Doe',
-      isDefault: true,
-    },
-    {
-      id: '2',
-      type: 'mastercard',
-      number: '5555555555554444',
-      maskedNumber: '•••• •••• •••• 4444',
-      expiry: '08/26',
-      cvv: '456',
-      name: 'John Doe',
-      isDefault: false,
-    },
-  ]);
-  const [upiIds, setUpiIds] = useState(['user@upi']);
+  const [cards, setCards] = useState([]); // server cards
+  const [upiId, setUpiId] = useState(null); // single UPI id
+  const [points, setPoints] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [savingCard, setSavingCard] = useState(false);
+  const [savingUpi, setSavingUpi] = useState(false);
 
   // Form states
   const [newCard, setNewCard] = useState({
@@ -59,53 +45,93 @@ const Payments = () => {
     return 'unknown';
   };
 
-  const handleAddCard = () => {
-    if (!newCard.number || !newCard.expiry || !newCard.cvv || !newCard.name) {
-      Alert.alert('Error', 'Please fill all card details');
+  const fetchPayments = useCallback(async () => {
+    try {
+      setLoading(true);
+      const token = await SecureStore.getItemAsync('userToken');
+      if (!token) { setLoading(false); return; }
+      const resp = await fetch(`${API_BASE_URL}/auth/payments`, { headers: { 'Authorization': `Bearer ${token}` }});
+      const data = await resp.json();
+      if (resp.ok) {
+        // Convert server cards to UI format
+        const serverCards = (data.cards || []).map((c, idx) => ({
+          id: idx.toString(),
+          type: c.brand,
+          maskedNumber: `•••• •••• •••• ${c.last4}`,
+          expiry: `${String(c.expiryMonth).padStart(2,'0')}/${String(c.expiryYear).slice(-2)}`,
+          name: c.nameOnCard,
+          isDefault: c.isDefault
+        }));
+        setCards(serverCards);
+        setUpiId(data.upi || null);
+        setPoints(data.points || 0);
+      }
+    } catch (err) {
+      console.log('Fetch payments error', err);
+    } finally { setLoading(false); }
+  }, []);
+
+  useEffect(() => { fetchPayments(); }, [fetchPayments]);
+
+  const handleAddCard = async () => {
+    if (!newCard.number || !newCard.expiry || !newCard.name) {
+      Alert.alert('Error', 'Fill all card details');
       return;
     }
-
-    if (newCard.number.length < 16) {
-      Alert.alert('Error', 'Please enter a valid card number');
+    if (newCard.number.replace(/\s+/g,'').length !== 16) {
+      Alert.alert('Error', 'Enter 16-digit card number');
       return;
     }
-
-    const cardType = detectCardType(newCard.number);
-
-    const newCardObj = {
-      id: Date.now().toString(),
-      type: cardType,
-      number: newCard.number,
-      maskedNumber: `•••• •••• •••• ${newCard.number.slice(-4)}`,
-      expiry: newCard.expiry,
-      cvv: newCard.cvv,
-      name: newCard.name,
-      isDefault: false,
-    };
-
-    setCards([...cards, newCardObj]);
-    setNewCard({ number: '', expiry: '', cvv: '', name: '' });
-    setShowAddCard(false);
-    Alert.alert('Success', 'Card added successfully');
+    try {
+      setSavingCard(true);
+      const token = await SecureStore.getItemAsync('userToken');
+      const resp = await fetch(`${API_BASE_URL}/auth/payments/cards`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ cardNumber: newCard.number, expiry: newCard.expiry, name: newCard.name })
+      });
+      const data = await resp.json();
+      if (!resp.ok) {
+        Alert.alert('Error', data.message || 'Failed to add card');
+      } else {
+        setNewCard({ number: '', expiry: '', cvv: '', name: '' });
+        setShowAddCard(false);
+        fetchPayments();
+      }
+    } catch (err) { console.log('Add card error', err); }
+    finally { setSavingCard(false); }
   };
 
-  const handleAddUpi = () => {
+  const setDefaultCard = async (cardIndex) => {
+    try {
+      const token = await SecureStore.getItemAsync('userToken');
+      const resp = await fetch(`${API_BASE_URL}/auth/payments/cards/${cardIndex}/default`, { method: 'PATCH', headers: { 'Authorization': `Bearer ${token}` }});
+      if (resp.ok) fetchPayments();
+    } catch (err) { console.log('Set default card error', err); }
+  };
+
+  const handleAddUpi = async () => {
     if (!newUpiId.includes('@')) {
-      Alert.alert('Error', 'Please enter a valid UPI ID');
+      Alert.alert('Error', 'Enter valid UPI ID');
       return;
     }
-
-    setUpiIds([...upiIds, newUpiId]);
-    setNewUpiId('');
-    setShowAddUpi(false);
-    Alert.alert('Success', 'UPI ID added successfully');
-  };
-
-  const setDefaultCard = (id) => {
-    setCards(cards.map(card => ({
-      ...card,
-      isDefault: card.id === id
-    })));
+    try {
+      setSavingUpi(true);
+      const token = await SecureStore.getItemAsync('userToken');
+      const resp = await fetch(`${API_BASE_URL}/auth/payments/upi`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ upiId: newUpiId })
+      });
+      const data = await resp.json();
+      if (!resp.ok) Alert.alert('Error', data.message || 'Failed to save UPI');
+      else {
+        setUpiId(data.upi);
+        setShowAddUpi(false);
+        setNewUpiId('');
+      }
+    } catch (err) { console.log('Add UPI error', err); }
+    finally { setSavingUpi(false); }
   };
 
   const renderCardLogo = (type) => {
@@ -124,22 +150,9 @@ const Payments = () => {
   };
 
   const paymentMethods = [
-    {
-      id: 'card',
-      title: 'Credit/Debit Card',
-      icon: CreditCard,
-    },
-    {
-      id: 'upi',
-      title: 'UPI',
-      icon: Bank,
-    },
-    {
-      id: 'points',
-      title: 'Grojet Points',
-      icon: Gift,
-      balance: '1,245',
-    }
+    { id: 'card', title: 'Credit/Debit Card', icon: CreditCard },
+    { id: 'upi', title: 'UPI', icon: Bank },
+    { id: 'points', title: 'Grojet Points', icon: Gift }
   ];
 
   return (
@@ -183,16 +196,17 @@ const Payments = () => {
 
             {/* Content per method */}
             <View className="mb-6">
-              {selectedMethod === 'card' && (
+        {selectedMethod === 'card' && (
                 <View className="space-y-3">
                   <Text className="text-sm font-medium text-gray-500 mb-1">Saved Cards</Text>
-                  {cards.map((card) => (
+          {loading && <ActivityIndicator color="#10B981" className="mb-2" />}
+          {cards.map((card, idx) => (
                     <TouchableOpacity
-                      key={card.id}
+            key={card.id}
                       className="bg-white p-4 rounded-xl border mb-2 border-gray-200 flex-row items-center"
-                      onPress={() => setDefaultCard(card.id)}
+            onPress={() => setDefaultCard(idx)}
                     >
-                      {renderCardLogo(card.type)}
+            {renderCardLogo(card.type)}
                       <View className="flex-1">
                         <Text className="text-gray-800 font-medium">{card.maskedNumber}</Text>
                         <Text className="text-gray-500 text-xs">Expires {card.expiry} • {card.name}</Text>
@@ -262,8 +276,9 @@ const Payments = () => {
                       <TouchableOpacity
                         className="bg-green-500 py-3 rounded-lg items-center"
                         onPress={handleAddCard}
+                        disabled={savingCard}
                       >
-                        <Text className="text-white font-medium">Add Card</Text>
+                        <Text className="text-white font-medium">{savingCard ? 'Adding...' : 'Add Card'}</Text>
                       </TouchableOpacity>
                     </View>
                   ) : (
@@ -278,14 +293,14 @@ const Payments = () => {
                 </View>
               )}
 
-              {selectedMethod === 'points' && (
+        {selectedMethod === 'points' && (
                 <View className="bg-white p-6 rounded-xl items-center shadow-xs">
                   <View className="bg-purple-100 p-4 rounded-full mb-4">
                     <Gift size={28} color="#8B5CF6" />
                   </View>
-                  <Text className="text-gray-500 mb-1">Your Grojet Points</Text>
-                  <Text className="text-3xl font-bold text-gray-800 mb-2">{paymentMethods.find(m => m.id === 'points').balance}</Text>
-                  <Text className="text-gray-500 text-sm mb-6">≈ ₹1,245.50</Text>
+          <Text className="text-gray-500 mb-1">Your Grojet Points</Text>
+          <Text className="text-3xl font-bold text-gray-800 mb-2">{points}</Text>
+          <Text className="text-gray-500 text-sm mb-6">Value: ₹{(points/100).toFixed(2)}</Text>
                   <View className="w-full">
                     <Text className="text-sm font-medium text-gray-700 mb-2">Points Benefits</Text>
                     <View className="bg-purple-50 p-3 rounded-lg mb-2">
@@ -303,14 +318,13 @@ const Payments = () => {
 
               {selectedMethod === 'upi' && (
                 <View className="bg-white p-6 rounded-xl shadow-xs">
-                  <Text className="text-sm font-medium text-gray-500 mb-4">Saved UPI IDs</Text>
-
-                  {upiIds.map((upi, index) => (
-                    <View key={index} className="flex-row items-center justify-between p-4 bg-blue-50 rounded-lg mb-3">
-                      <Text className="text-gray-800 font-medium">{upi}</Text>
+                  <Text className="text-sm font-medium text-gray-500 mb-4">Saved UPI ID</Text>
+                  {upiId && (
+                    <View className="flex-row items-center justify-between p-4 bg-blue-50 rounded-lg mb-3">
+                      <Text className="text-gray-800 font-medium">{upiId}</Text>
                       <Check size={20} color="#3B82F6" />
                     </View>
-                  ))}
+                  )}
 
                   {showAddUpi ? (
                     <View className="border-2 border-dashed border-gray-300 rounded-xl p-4 mt-2">
@@ -334,8 +348,9 @@ const Payments = () => {
                       <TouchableOpacity
                         className="bg-blue-500 py-3 rounded-lg items-center"
                         onPress={handleAddUpi}
+                        disabled={savingUpi}
                       >
-                        <Text className="text-white font-medium">Add UPI ID</Text>
+                        <Text className="text-white font-medium">{savingUpi ? 'Saving...' : 'Add UPI ID'}</Text>
                       </TouchableOpacity>
                     </View>
                   ) : (
@@ -344,7 +359,7 @@ const Payments = () => {
                       onPress={() => setShowAddUpi(true)}
                     >
                       <Plus size={18} color="#6B7280" />
-                      <Text className="text-gray-600 ml-2 font-medium">Add new UPI ID</Text>
+                      <Text className="text-gray-600 ml-2 font-medium">{upiId ? 'Update UPI ID' : 'Add new UPI ID'}</Text>
                     </TouchableOpacity>
                   )}
                 </View>

@@ -95,13 +95,23 @@ export default function Cart() {
                     shadowOffset: { width: 0, height: 2 },
                   }}
                 >
-                  <Image
-                    source={{ uri: item.thumbnail }}
-                    className="w-24 h-24 rounded-lg mr-4"
-                    resizeMode="cover"
-                  />
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate('ProductDetail', { product: item })}
+                    activeOpacity={0.8}
+                  >
+                    <Image
+                      source={{ uri: item.thumbnail }}
+                      className="w-24 h-24 rounded-lg mr-4"
+                      resizeMode="cover"
+                    />
+                  </TouchableOpacity>
                   <View className="flex-1">
-                    <Text className="text-lg font-bold text-gray-900 mb-1">{item.name}</Text>
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate('ProductDetail', { product: item })}
+                      activeOpacity={0.7}
+                    >
+                      <Text className="text-lg font-bold text-gray-900 mb-1">{item.name}</Text>
+                    </TouchableOpacity>
                     <Text className="text-sm text-gray-500 mb-3">
                       ₹{pricePerItem} per item
                       {item.pricing?.mrp && item.pricing?.mrp > pricePerItem && (

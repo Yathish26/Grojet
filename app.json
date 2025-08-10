@@ -26,7 +26,10 @@
       "splash": {
         "image": "./assets/splash-ios.png"
       },
-      "supportsTablet": true
+      "supportsTablet": true,
+      "config": {
+        "googleMapsApiKey": "AIzaSyC_OYiHvy9Oikmrc8PQZXHP4bvTAmgKD34"
+      }
     },
     "android": {
       "splash": {
@@ -36,7 +39,12 @@
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.iamyathz.grojet"
+      "package": "com.iamyathz.grojet",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyC_OYiHvy9Oikmrc8PQZXHP4bvTAmgKD34"
+        }
+      }
     },
     "extra": {
       "eas": {

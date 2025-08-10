@@ -27,6 +27,7 @@ import {
     X
 } from 'lucide-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 import { useFocusEffect } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
 import BackHeader from 'components/BackHeader';
@@ -177,16 +178,37 @@ export default function ProductDetail({ route, navigation }) {
         ]).start();
     };
 
-    const toggleWishlist = (product) => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        setWishlistItems(prevItems => {
-            const isInWishlist = prevItems.some(item => item._id === product._id);
-            if (isInWishlist) {
-                return prevItems.filter(item => item._id !== product._id);
-            } else {
-                return [...prevItems, product];
+    const toggleWishlist = async (prod) => {
+        try {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            const token = await SecureStore.getItemAsync('userToken');
+            if (!token) {
+                Alert.alert('Login Required', 'Please login to manage wishlist');
+                return;
             }
-        });
+            const resp = await fetch(`${API_BASE_URL}/auth/wishlist/${prod._id}/toggle`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            const data = await resp.json();
+            if (!resp.ok) {
+                console.log('Wishlist toggle failed', data);
+                Alert.alert('Wishlist', data.message || 'Failed to update wishlist');
+                return;
+            }
+            // data.wishlist is array of product IDs; refetch details for added one if necessary
+            setWishlistItems(prev => {
+                const isIn = prev.some(p => p._id === prod._id);
+                if (isIn) return prev.filter(p => p._id !== prod._id);
+                return [...prev, prod];
+            });
+            await AsyncStorage.setItem('wishlist', JSON.stringify(wishlistItems));
+        } catch (err) {
+            console.log('Toggle wishlist error', err);
+        }
     };
 
     const shareProduct = async () => {

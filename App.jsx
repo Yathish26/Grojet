@@ -37,6 +37,7 @@ import PrivacyPolicy from 'screens/PrivacyPolicy';
 import Otp from 'screens/Otp';
 import CompleteProfile from 'screens/CompleteProfile';
 import EditProfile from 'screens/EditProfile';
+import EditAddress from 'screens/EditAddress';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -125,6 +126,7 @@ export default function App() {
               <Stack.Screen name="Otp" component={Otp} />
               <Stack.Screen name="CompleteProfile" component={CompleteProfile} />
               <Stack.Screen name="EditProfile" component={EditProfile} />
+              <Stack.Screen name="EditAddress" component={EditAddress} />
             </Stack.Navigator>
 
             <StatusBar style="auto" translucent />
