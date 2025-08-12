@@ -30,6 +30,7 @@ import FloatingCartButton from 'components/FloatingCartButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
+import { API_HEADER } from 'endp/bline';
 
 const categories = [
   {
@@ -143,7 +144,7 @@ const categoryTint = {
   monsoon: '#e6f6fb',
 };
 
-const API_BASE_URL = "https://api.grojetdelivery.com";
+const API_BASE_URL = API_HEADER;
 
 export default function HomeScreen({ navigation }) {
   const [selectedCategory, setSelectedCategory] = useState('all');

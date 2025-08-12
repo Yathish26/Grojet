@@ -29,8 +29,9 @@ import { useFocusEffect } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
 import BackHeader from 'components/BackHeader';
 import FloatingCartButton from 'components/FloatingCartButton';
+import { API_HEADER } from 'endp/bline';
 
-const API_BASE_URL = "http://172.16.0.39:5000";
+const API_BASE_URL = API_HEADER;
 
 export default function CategoryProducts({ route, navigation }) {
     const { category } = route.params;

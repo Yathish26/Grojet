@@ -5,8 +5,9 @@ import BackHeader from 'components/BackHeader';
 import { useNavigation } from '@react-navigation/native';
 import { useFocusEffect } from '@react-navigation/native';
 import * as SecureStore from 'expo-secure-store';
+import { API_HEADER } from 'endp/bline';
 
-const API_BASE_URL = 'http://172.16.0.39:5000';
+const API_BASE_URL = API_HEADER;
 
 const Notifications = () => {
   const navigation = useNavigation();

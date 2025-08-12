@@ -13,8 +13,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Image as ExpoImage } from "expo-image";
 import GradientBlock from "components/Home/GradientBlock";
 import AppText from "components/AppText";
+import { API_HEADER } from "endp/bline";
 
-const API_URL = "https://api.grojetdelivery.com/categories";
+const API_URL = `${API_HEADER}/categories`;
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const SPACING = 12;

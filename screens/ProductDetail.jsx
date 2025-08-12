@@ -33,9 +33,10 @@ import * as Haptics from 'expo-haptics';
 import BackHeader from 'components/BackHeader';
 import FloatingCartButton from 'components/FloatingCartButton';
 import ImageViewing from 'react-native-image-viewing';
+import { API_HEADER } from 'endp/bline';
 
 const { width: screenWidth } = Dimensions.get('window');
-const API_BASE_URL = "http://172.16.0.39:5000";
+const API_BASE_URL = API_HEADER;
 
 export default function ProductDetail({ route, navigation }) {
     const { product: initialProduct } = route.params;

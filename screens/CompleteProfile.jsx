@@ -12,8 +12,9 @@ import { useNavigation } from '@react-navigation/native';
 import * as SecureStore from 'expo-secure-store';
 import { useUser } from '../context/UserContext';
 import BackHeader from 'components/BackHeader';
+import { API_HEADER } from 'endp/bline';
 
-const API_BASE_URL = "http://172.16.0.39:5000";
+const API_BASE_URL = API_HEADER;
 
 export default function CompleteProfile() {
   const [name, setName] = useState('');

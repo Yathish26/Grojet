@@ -12,8 +12,9 @@ import {
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useUser } from '../context/UserContext';
+import { API_HEADER } from 'endp/bline';
 
-const API_BASE_URL = "http://172.16.0.39:5000";
+const API_BASE_URL = API_HEADER;
 
 const Otp = () => {
     const [otp, setOtp] = useState(['', '', '', '', '', '']);

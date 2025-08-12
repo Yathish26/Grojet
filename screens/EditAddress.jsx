@@ -6,6 +6,7 @@ import * as SecureStore from 'expo-secure-store';
 import * as Location from 'expo-location';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import BackHeader from 'components/BackHeader';
+import { API_HEADER } from 'endp/bline';
 
 const iconDefs = {
   home: <Home size={20} color="green" />,
@@ -38,7 +39,7 @@ export default function EditAddress() {
     latitudeDelta: 0.015,
     longitudeDelta: 0.0121,
   });
-  const API_BASE_URL = 'http://172.16.0.39:5000';
+  const API_BASE_URL = API_HEADER;
 
   const handleChange = (name, value) => setFormData(p => ({ ...p, [name]: value }));
 

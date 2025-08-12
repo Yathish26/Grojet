@@ -13,8 +13,9 @@ import Svgdata from 'components/Svgdata';
 import BackHeader from 'components/BackHeader';
 import { MaskedTextInput } from "react-native-mask-text";
 import * as SecureStore from 'expo-secure-store';
+import { API_HEADER } from 'endp/bline';
 
-const API_BASE_URL = 'http://172.16.0.39:5000'; // adjust if needed
+const API_BASE_URL = API_HEADER;
 
 const Payments = () => {
   const [selectedMethod, setSelectedMethod] = useState('card');

@@ -5,6 +5,7 @@ import { ChevronRight, Plus, Building, Home, Hotel, MoreHorizontal, Share } from
 import React, { useCallback, useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
+import { API_HEADER } from 'endp/bline';
 
 export default function Addresses() {
   const [activeOptions, setActiveOptions] = useState(null);
@@ -14,7 +15,7 @@ export default function Addresses() {
   const [addresses, setAddresses] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const API_BASE_URL = 'http://172.16.0.39:5000';
+  const API_BASE_URL = API_HEADER;
   const iconMap = { home: Home, office: Building, other: MoreHorizontal, work: Building, hotel: Hotel };
 
   const fetchAddresses = useCallback(async () => {

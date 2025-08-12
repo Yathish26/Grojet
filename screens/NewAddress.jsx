@@ -7,6 +7,7 @@ const lightMapStyle = [];
 import * as SecureStore from 'expo-secure-store';
 import * as Location from 'expo-location';
 import BackHeader from 'components/BackHeader';
+import { API_HEADER } from 'endp/bline';
 
 export default function NewAddress() {
   const navigation = useNavigation();
@@ -32,7 +33,7 @@ export default function NewAddress() {
     latitudeDelta: 0.015,
     longitudeDelta: 0.0121,
   });
-  const API_BASE_URL = 'http://172.16.0.39:5000';
+  const API_BASE_URL = API_HEADER;
 
   const addressTypes = [
     { id: 'home', label: 'Home', icon: <Home size={20} color="green" /> },
