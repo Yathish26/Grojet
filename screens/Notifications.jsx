@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useFocusEffect } from '@react-navigation/native';
 import * as SecureStore from 'expo-secure-store';
 
-const API_BASE_URL = 'http://192.168.1.38:5000';
+const API_BASE_URL = 'http://172.16.0.39:5000';
 
 const Notifications = () => {
   const navigation = useNavigation();

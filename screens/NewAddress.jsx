@@ -32,7 +32,7 @@ export default function NewAddress() {
     latitudeDelta: 0.015,
     longitudeDelta: 0.0121,
   });
-  const API_BASE_URL = 'http://192.168.1.38:5000';
+  const API_BASE_URL = 'http://172.16.0.39:5000';
 
   const addressTypes = [
     { id: 'home', label: 'Home', icon: <Home size={20} color="green" /> },

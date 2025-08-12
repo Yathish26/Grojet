@@ -14,7 +14,7 @@ import BackHeader from 'components/BackHeader';
 import { MaskedTextInput } from "react-native-mask-text";
 import * as SecureStore from 'expo-secure-store';
 
-const API_BASE_URL = 'http://192.168.1.38:5000'; // adjust if needed
+const API_BASE_URL = 'http://172.16.0.39:5000'; // adjust if needed
 
 const Payments = () => {
   const [selectedMethod, setSelectedMethod] = useState('card');

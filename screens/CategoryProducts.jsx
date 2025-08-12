@@ -30,7 +30,7 @@ import * as Haptics from 'expo-haptics';
 import BackHeader from 'components/BackHeader';
 import FloatingCartButton from 'components/FloatingCartButton';
 
-const API_BASE_URL = "http://192.168.1.38:5000";
+const API_BASE_URL = "http://172.16.0.39:5000";
 
 export default function CategoryProducts({ route, navigation }) {
     const { category } = route.params;

@@ -13,7 +13,7 @@ import * as SecureStore from 'expo-secure-store';
 import { useUser } from '../context/UserContext';
 import BackHeader from 'components/BackHeader';
 
-const API_BASE_URL = "http://192.168.1.38:5000";
+const API_BASE_URL = "http://172.16.0.39:5000";
 
 export default function CompleteProfile() {
   const [name, setName] = useState('');

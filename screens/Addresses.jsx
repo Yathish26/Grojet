@@ -14,7 +14,7 @@ export default function Addresses() {
   const [addresses, setAddresses] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const API_BASE_URL = 'http://192.168.1.38:5000';
+  const API_BASE_URL = 'http://172.16.0.39:5000';
   const iconMap = { home: Home, office: Building, other: MoreHorizontal, work: Building, hotel: Hotel };
 
   const fetchAddresses = useCallback(async () => {

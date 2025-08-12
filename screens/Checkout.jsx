@@ -28,7 +28,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import BackHeader from 'components/BackHeader';
 import * as Haptics from 'expo-haptics';
 
-const API_BASE_URL = "http://192.168.1.38:5000";
+const API_BASE_URL = "http://172.16.0.39:5000";
 
 export default function Checkout({ route, navigation }) {
     const { cartItems } = route.params || { cartItems: [] };
