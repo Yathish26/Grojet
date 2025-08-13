@@ -113,10 +113,10 @@ export default function Addresses() {
           onb2={handleCancelDelete}
         />
       )}
+      <BackHeader title="My Addresses" />
       <TouchableWithoutFeedback onPress={handleOutsidePress}>
         <View className="flex-1 bg-gray-100">
           <ScrollView keyboardShouldPersistTaps="handled" className="flex-1 pb-5">
-            <BackHeader title="My Addresses" />
 
             <View className="p-4">
               {/* Add new address button */}

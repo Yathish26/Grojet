@@ -65,7 +65,7 @@ export default function Profile() {
       )}
 
       <View className="flex-1 bg-gray-50">
-        <BackHeader title="Profile" middle={true} />
+        <BackHeader title="Profile" middle={true} backgroundColor="#e5e7eb" />
         
         <ProfileHeader 
           user={user} 

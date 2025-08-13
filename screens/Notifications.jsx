@@ -180,11 +180,11 @@ const Notifications = () => {
         </View>
       </ScrollView>
       {dirty && (
-        <View className="absolute left-0 right-0 bottom-0 p-4 bg-white border-t border-gray-200">
+        <View className="absolute left-0 right-0 bottom-0 p-4 mb-4 bg-white border-t border-gray-200">
           <TouchableOpacity
             onPress={saveAll}
             disabled={saving}
-            className={`py-4 rounded-lg items-center ${saving ? 'bg-green-400' : 'bg-green-600'}`}
+            className={`py-4 rounded-full items-center ${saving ? 'bg-green-400' : 'bg-green-600'}`}
           >
             <Text className="text-white font-semibold text-base">{saving ? 'Saving...' : 'Save Changes'}</Text>
           </TouchableOpacity>

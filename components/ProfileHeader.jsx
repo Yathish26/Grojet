@@ -38,16 +38,16 @@ const ProfileHeader = memo(({ user, isLoggedIn, isLoading, navigate }) => {
 
   if (isLoggedIn && user) {
     return (
-      <View className="bg-white p-5 border-gray-100 rounded-b-3xl">
-        <Text className="text-3xl font-semibold text-gray-800 mb-3">{user.name ? user.name : 'Your Account'}</Text>
+      <View className="bg-gray-200 p-5 border-gray-100 rounded-b-3xl">
+        <Text className="text-3xl font-semibold text-gray-900 mb-3">{user.name ? user.name : 'Your Account'}</Text>
         <View className='flex-col gap-2'>
           {user.email && <View className="flex-row gap-2 items-center">
             <MailOpen size={16} color="#4b5563" />
-            <Text className="text-gray-700 text-base font-medium">{user.email}</Text>
+            <Text className="text-gray-900 text-base font-medium">{user.email}</Text>
           </View>}
           {user.phone && <View className="flex-row gap-2 items-center">
             <PhoneCall size={16} color="#4b5563" />
-            <Text className="text-gray-700 text-base font-medium">{user.phone}</Text>
+            <Text className="text-gray-900 text-base font-medium">{user.phone}</Text>
           </View>}
         </View>
       </View>

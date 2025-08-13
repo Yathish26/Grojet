@@ -25,9 +25,9 @@ const Otp = () => {
     const navigation = useNavigation();
     const route = useRoute();
     const { login } = useUser();
-    
+
     const { phoneNumber, requestId } = route.params || {};
-    
+
     // Refs for OTP inputs
     const otpRefs = useRef([]);
 
@@ -75,7 +75,7 @@ const Otp = () => {
 
     const handleSubmit = async (otpString = null) => {
         const otpToVerify = otpString || otp.join('');
-        
+
         if (otpToVerify.length !== 6) {
             Alert.alert('Error', 'Please enter complete OTP');
             return;
@@ -88,9 +88,9 @@ const Otp = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ 
+                body: JSON.stringify({
                     phoneNumber: phoneNumber,
-                    otp: otpToVerify 
+                    otp: otpToVerify
                 }),
             });
 
@@ -196,7 +196,14 @@ const Otp = () => {
                     </Text>
 
                     {/* OTP Input Fields */}
-                    <View className="flex-row justify-between mb-6">
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            marginBottom: 24,
+                        }}
+                    >
                         {otp.map((digit, index) => (
                             <TextInput
                                 key={index}
@@ -206,9 +213,18 @@ const Otp = () => {
                                 onKeyPress={e => handleKeyPress(e, index)}
                                 keyboardType="number-pad"
                                 maxLength={1}
-                                className="w-12 h-12 bg-gray-50 rounded-xl border border-gray-200 text-center text-lg font-bold text-gray-900"
                                 style={{
+                                    width: 48,
+                                    height: 48,
+                                    backgroundColor: '#F9FAFB',
+                                    borderRadius: 12,
+                                    borderWidth: 1,
+                                    borderColor: '#E5E7EB',
                                     textAlign: 'center',
+                                    textAlignVertical: 'center', // Ensures vertical alignment on Android
+                                    fontSize: 18,
+                                    fontWeight: 'bold',
+                                    color: '#111827',
                                 }}
                                 selectTextOnFocus
                             />
